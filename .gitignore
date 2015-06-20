@@ -27,3 +27,6 @@ build/Release
 node_modules
 
 src/public/libs/*
+src/*.js
+src/public/app/**/*.js
+src/routes.js
