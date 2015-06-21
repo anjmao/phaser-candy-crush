@@ -10,6 +10,7 @@
     "bootstrap": "~3.3.5",
     "jquery": "~2.1.4",
     "phaser": "~2.3.0",
-    "angular": "~1.4.1"
+    "angular": "~1.4.1",
+    "angular-smart-table": "~2.1.0"
   }
 }

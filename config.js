@@ -14,7 +14,7 @@ var config = {
 	    srcAngular + '**/*.ts',
 		'!'+srcAngular + 'typings**/*.ts'
 	],
-	mainFile : destServer + 'app.js',
+	mainFile : destServer + 'App.js',
 	destServer : destServer,
 	destPublic : srcAngular,
 	srcServer : srcServer

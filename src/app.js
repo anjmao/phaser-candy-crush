@@ -3,7 +3,8 @@ var bodyParser = require("body-parser");
 //import methodOverride = require("method-override");
 var errorHandler = require("errorhandler");
 var path = require('path');
-var routes = require('./routes');
+var routes = require('./Routes');
+var apiRoutes = require('./ApiRoutes');
 var app = express();
 // Configuration
 app.set('views', path.join(__dirname, '/views')); // critical to use path.join on windows
@@ -23,6 +24,7 @@ else if (env === 'production') {
 // Routes
 //app.get('/', routes.index);
 app.use('/', routes);
+app.use('/api', apiRoutes);
 app.listen(3000, function () {
     console.log("Demo Express server listening on port %d in %s mode", 3000, app.settings.env);
 });

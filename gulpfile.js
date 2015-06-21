@@ -2,12 +2,20 @@ var gulp = require('gulp'),
    nodemon = require('gulp-nodemon'),
    ts = require('gulp-typescript'),
    sourcemaps = require('gulp-sourcemaps'),
-   browserify = require('gulp-browserify');
+   browserify = require('gulp-browserify'),
+   clean = require('gulp-clean');
 
 var config = require('./config');
 
-gulp.task('compile-server', function () {
+gulp.task('compile-server', compileServer);
+gulp.task('compile-public', compilePublic);
+gulp.task('watch-server', watchServer);
+gulp.task('watch-public', watchPublic);
+gulp.task('start',['compile-server','compile-public'], start);
+gulp.task('deploy', ['build'], deploy);
+gulp.task('clean-js', cleanJs);
 
+function compileServer(params) {
    var tsResult = gulp.src(config.tsServerSrc)
       .pipe(sourcemaps.init())
       .pipe(ts(config.tsCompiler));
@@ -16,11 +24,10 @@ gulp.task('compile-server', function () {
    //.pipe(concat('output.js'))
       //.pipe(sourcemaps.write())
       .pipe(gulp.dest(config.destServer));
-});
+}
 
-gulp.task('compile-public', function () {
-  
-  var tsResult = gulp.src(config.tsPublicSrc)
+function compilePublic(params) {
+   var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
       .pipe(ts(config.tsCompiler));
 
@@ -28,30 +35,43 @@ gulp.task('compile-public', function () {
    //.pipe(concat('output.js'))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(config.destPublic));
-});
+}
 
-gulp.task('watch-server', function () {
+
+function watchServer(params) {
    gulp.watch(config.tsServerSrc, ['compile-server']);
-});
+}
 
-gulp.task('watch-public', function () {
+
+function watchPublic(params) {
    gulp.watch(config.tsPublicSrc, ['compile-public']);
-});
+}
 
-gulp.task('start',['compile-server','compile-public','watch-server','watch-public'],
-   function () {
-      nodemon({
+function start(params) {
+   nodemon({
          script: config.mainFile,
          ext: 'js',
       }).on('restart', function () {
          console.log('reload');
+      }).on('start',function(){
+         watchPublic();
+         watchServer();
       });
-   });
+}
 
-
-gulp.task('deploy', ['build'], function () {
-   return gulp.src(['package.json'])
+function deploy(params) {
+    return gulp.src(['package.json'])
       .pipe(gulp.dest('./deploy'));
-});
+}
+
+
+function cleanJs(params) {
+   var paths = [
+      config.srcServer+'**/*.js',
+      '!'+config.srcServer+'public/libs/**/*.js'
+   ]
+   return gulp.src(paths, {read: false})
+        .pipe(clean());
+}
 
 //gulp.task('default', ['deploy']);

@@ -6,12 +6,16 @@
     
     // The tsc is a cmd / bash file. It must be executed in a shell
     "isShellCommand": true,
+    
+    "windows": {
+        "command": "tsc.exe"
+    },
 
     // Show the output window only if unrecognized errors occur. 
     "showOutput": "silent",
     
     // args is the HelloWorld program to compile.
-    "args": [],
+    "args": ["--module commonjs","${file}"],
     
     // Use the standard tsc problem matcher to find compile problems
     // in the output.

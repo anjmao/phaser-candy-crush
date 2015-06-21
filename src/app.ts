@@ -7,7 +7,8 @@ import bodyParser = require("body-parser");
 import errorHandler = require("errorhandler");
 import path = require('path');
 
-import routes = require('./routes');
+import routes = require('./Routes');
+import apiRoutes = require('./ApiRoutes');
 
 var app = express();
 
@@ -34,6 +35,7 @@ else if (env === 'production') {
 
 //app.get('/', routes.index);
 app.use('/', routes);
+app.use('/api', apiRoutes);
 
 
 app.listen(3000, function(){
