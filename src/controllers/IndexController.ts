@@ -1,4 +1,4 @@
-﻿// <reference path='../../typings/tsd.d.ts' />
+// <reference path='../../typings/tsd.d.ts' />
 import express = require('express');
 
 interface IndexViewModel {
@@ -21,6 +21,8 @@ class IndexController {
             }
          ]
       }
+      
+      
       
       res.render('index', model);
    }

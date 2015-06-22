@@ -3,7 +3,8 @@ var gulp = require('gulp'),
    ts = require('gulp-typescript'),
    sourcemaps = require('gulp-sourcemaps'),
    browserify = require('gulp-browserify'),
-   clean = require('gulp-clean');
+   clean = require('gulp-clean'),
+   changed = require('gulp-changed');
 
 var config = require('./config');
 
@@ -15,14 +16,20 @@ gulp.task('start',['compile-server','compile-public'], start);
 gulp.task('deploy', ['build'], deploy);
 gulp.task('clean-js', cleanJs);
 
-function compileServer(params) {
-   var tsResult = gulp.src(config.tsServerSrc)
-      .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler));
+gulp.task('one', function(file){
+   gulp.watch(file.path, function(){
+      return gulp.src(file.path)
+          .pipe(ts(config.tsCompiler)).js
+          .pipe(gulp.dest('dest/file.js'));
+   })
+          
+});
 
-   return tsResult.js
-   //.pipe(concat('output.js'))
-      //.pipe(sourcemaps.write())
+function compileServer(params) {
+   return gulp.src(config.tsServerSrc)
+      //.pipe(changed(config.destServer))
+      .pipe(sourcemaps.init())
+      .pipe(ts(config.tsCompiler)).js
       .pipe(gulp.dest(config.destServer));
 }
 
