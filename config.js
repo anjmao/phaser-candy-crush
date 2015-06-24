@@ -1,7 +1,7 @@
-var destServer = 'src/';
+var destServer = './src/';
 	
-var srcServer = 'src/',
-    srcPublic = 'src/public/',
+var srcServer = './src/',
+    srcPublic = './src/public/',
 	 srcAngular = srcPublic + 'app/';
 
 var config = {
@@ -10,9 +10,16 @@ var config = {
 		srcServer + '**/*.ts',
 		'!'+srcPublic+'**/*.ts'
 	],
+	jsServerSrc : [
+		srcServer + '**/*.js',
+		'!'+srcPublic+'**/*.js'
+	],
 	tsPublicSrc : [
 	    srcAngular + '**/*.ts',
 		'!'+srcAngular + 'typings**/*.ts'
+	],
+	publicJsInject : [
+		 srcAngular + '**/*.js'
 	],
 	mainFile : destServer + 'App.js',
 	destServer : destServer,
