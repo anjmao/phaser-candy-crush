@@ -1,4 +1,7 @@
-# candy
+# Candy game documentation
+
+## Environment setup
+1. Install NodeJs from https://nodejs.org/
 
 1. npm install
 2. bower install
