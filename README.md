@@ -7,6 +7,8 @@
 ```
 git clone https://github.com/Anjmao/candy.git
 ```
+Recommened IDE is Visual Studio 2013 Community with installed typescript plugin.
+
 
 ## Used technologies
 * Backend
