@@ -15,6 +15,7 @@ git clone https://github.com/Anjmao/candy.git
  * PostgreSQL
  * Sequelize ORM
  * Q library (https://github.com/kriskowal/q)
+ * Vash view engine
 * Frontend
  * AngularJs
  * Phaser
