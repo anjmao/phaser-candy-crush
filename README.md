@@ -9,7 +9,7 @@ git clone https://github.com/Anjmao/candy.git
 ```
 
 ## Used technologies
-*Backend
-**NodeJs
-**ExpressJs
-**PostgreSQL
+* Backend
+ ** NodeJs
+ ** ExpressJs
+ ** PostgreSQL
