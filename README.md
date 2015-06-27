@@ -13,3 +13,10 @@ git clone https://github.com/Anjmao/candy.git
  * NodeJs
  * ExpressJs
  * PostgreSQL
+ * Sequelize ORM
+ * Q library (https://github.com/kriskowal/q)
+* Frontend
+ * AngularJs
+ * Phaser
+ * Bootstrap
+ * jQuery
