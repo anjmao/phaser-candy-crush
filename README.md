@@ -7,5 +7,4 @@
 ```
 git clone https://github.com/Anjmao/candy.git
 ```
-Or you can use GitExtensions: Go to C:\Sources and right click GitExt Clone
 
