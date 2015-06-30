@@ -16,10 +16,11 @@ gulp.task('compile-public', compilePublic);
 gulp.task('watch-server', watchServer);
 gulp.task('watch-public', watchPublic);
 
+gulp.task('clean-deploy', cleanDeploy);
 gulp.task('start', ['compile-server', 'compile-public'], start);
 gulp.task('compile-all',['compile-server', 'compile-public']);
 
-gulp.task('heroku-build',['copy-package','compile-all'], postBuild);
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all'], postBuild);
 gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
 gulp.task('bower-inject', bowerInject);
@@ -67,6 +68,11 @@ function copyPackage(params){
    return gulp.src(['package.json','Procfile']).pipe(gulp.dest('./deploy'));
 }
 
+function cleanDeploy(){
+   return gulp.src('./deploy', {read: false})
+          .pipe(clean());
+}
+
 function postBuild(params) {
    var files = [
       './src/**/*.js',
@@ -75,7 +81,7 @@ function postBuild(params) {
       ];
       
    return gulp.src(files)
-              .pipe(gulp.dest('./deploy'));
+          .pipe(gulp.dest('./deploy'));
 }
 
 

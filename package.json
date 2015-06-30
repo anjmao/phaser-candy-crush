@@ -4,7 +4,7 @@
   "description": "Payments system for gaming",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "gulp heroku-build && node deploy/app.js"
   },
   "repository": {
     "type": "git",
