@@ -20,7 +20,7 @@ gulp.task('clean-deploy', cleanDeploy);
 gulp.task('start', ['compile-server', 'compile-public'], start);
 gulp.task('compile-all',['compile-server', 'compile-public']);
 
-gulp.task('heroku-build',['clean-deploy','copy-package','compile-all'], postBuild);
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject','custom-inject'], postBuild);
 gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
 gulp.task('bower-inject', bowerInject);
