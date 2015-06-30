@@ -16,7 +16,7 @@ gulp.task('compile-public', compilePublic);
 gulp.task('watch-server', watchServer);
 gulp.task('watch-public', watchPublic);
 gulp.task('start', ['compile-server', 'compile-public'], start);
-gulp.task('deploy', ['build'], deploy);
+gulp.task('deploy', ['compile-server', 'compile-public']);
 gulp.task('clean-js', cleanJs);
 gulp.task('bower-inject', bowerInject);
 gulp.task('custom-inject', customInject)

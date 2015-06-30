@@ -2,9 +2,11 @@
   "name": "candy-crust",
   "version": "1.0.0",
   "description": "Payments system for gaming",
-  "main": "index.js",
+  "main": "src/App.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/App.js",
+    "postinstall": "gulp deploy"
   },
   "repository": {
     "type": "git",
