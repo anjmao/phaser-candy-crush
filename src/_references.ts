@@ -3,5 +3,5 @@
 
 
 /*----CONTROLLERS--*/
-/// <reference path="controllers/IndexController.ts"/>
+/// <reference path="controllers/index-controller.ts"/>
 

@@ -2,7 +2,7 @@
   "name": "candy-crust",
   "version": "1.0.0",
   "description": "Payments system for gaming",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,9 +15,11 @@
   "bugs": {
     "url": "https://github.com/Anjmao/candy-crust/issues"
   },
+  "engines": {
+    "node": "0.12.2"
+  },
   "homepage": "https://github.com/Anjmao/candy-crust#readme",
   "devDependencies": {
-    "bower": "^1.4.1",
     "gulp": "^3.9.0",
     "gulp-angular-filesort": "^1.1.1",
     "gulp-browserify": "^0.5.1",
@@ -27,10 +29,12 @@
     "gulp-nodemon": "^2.0.3",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-typescript": "^2.7.6",
+    "bower": "^1.4.1",
     "merge2": "^0.3.5",
     "wiredep": "^2.2.2"
   },
   "dependencies": {
+    
     "body-parser": "^1.12.4",
     "errorhandler": "^1.4.0",
     "express": "^4.12.4",

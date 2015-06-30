@@ -21,7 +21,7 @@ var config = {
 	publicJsInject : [
 		 srcAngular + '**/*.js'
 	],
-	mainFile : destServer + 'App.js',
+	mainFile : destServer + 'app.js',
 	destServer : destServer,
 	destPublic : srcAngular,
 	srcServer : srcServer
