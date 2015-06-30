@@ -4,7 +4,8 @@
   "description": "Payments system for gaming",
   "main": "app.js",
   "scripts": {
-    "start": "gulp heroku-build && node deploy/app.js"
+    "start": "node deploy/app.js",
+    "postinstall": "gulp heroku-build"
   },
   "repository": {
     "type": "git",
