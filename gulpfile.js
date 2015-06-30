@@ -15,15 +15,18 @@ gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
 gulp.task('watch-server', watchServer);
 gulp.task('watch-public', watchPublic);
+
 gulp.task('start', ['compile-server', 'compile-public'], start);
-gulp.task('deploy', ['compile-server']);
+gulp.task('compile-all',['compile-server', 'compile-public']);
+
+gulp.task('heroku-build',['copy-package','compile-all'], postBuild);
+gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
 gulp.task('bower-inject', bowerInject);
-gulp.task('custom-inject', customInject)
+gulp.task('custom-inject', customInject);
 
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
-   //.pipe(changed(config.destServer))
       .pipe(sourcemaps.init())
       .pipe(ts(config.tsCompiler)).js
       .pipe(gulp.dest(config.destServer));
@@ -35,11 +38,9 @@ function compilePublic(params) {
       .pipe(ts(config.tsCompiler));
 
    return tsResult.js
-   //.pipe(concat('output.js'))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(config.destPublic));
 }
-
 
 function watchServer(params) {
    gulp.watch(config.tsServerSrc, ['compile-server']);
@@ -62,9 +63,19 @@ function start(params) {
    });
 }
 
-function deploy(params) {
-   return gulp.src(['package.json'])
-      .pipe(gulp.dest('./deploy'));
+function copyPackage(params){
+   return gulp.src(['package.json','Procfile']).pipe(gulp.dest('./deploy'));
+}
+
+function postBuild(params) {
+   var files = [
+      './src/**/*.js',
+      './src/**/*.css',
+      './src/**/*.vash'
+      ];
+      
+   return gulp.src(files)
+              .pipe(gulp.dest('./deploy'));
 }
 
 

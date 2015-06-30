@@ -7,8 +7,8 @@ import bodyParser = require("body-parser");
 import errorHandler = require("errorhandler");
 import path = require('path');
 
-import routes = require('./Routes');
-import apiRoutes = require('./ApiRoutes');
+import routes = require('./routes');
+import apiRoutes = require('./api-routes');
 
 var app = express();
 
