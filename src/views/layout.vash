@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	 <title>@model.title</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Navbar Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/libs/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    
+    <!-- bower:css -->
+    <!-- endbower -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/site.css" rel="stylesheet">
+    @html.block('js-in-header')
+  </head>
+
+  <body ng-app="App">
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Project name</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/game">Game</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+              <li><a href="../navbar-static-top/">Static top</a></li>
+              <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div>
+			@html.block('content')
+		</div>
+
+    </div> <!-- /container -->
+    
+    <!-- bower:js -->
+    <script src="../public/libs/jquery/dist/jquery.js"></script>
+    <script src="../public/libs/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../public/libs/phaser/build/phaser.js"></script>
+    <script src="../public/libs/angular/angular.js"></script>
+    <script src="../public/libs/angular-smart-table/dist/smart-table.js"></script>
+    <script src="../public/libs/angular-ui-router/release/angular-ui-router.js"></script>
+    <!-- endbower -->
+    
+    <!-- inject:js -->
+    <script src="/src/public/app/Game/app.js"></script>
+    <script src="/src/public/app/Admin/module.js"></script>
+    <script src="/src/public/app/_references.js"></script>
+    <script src="/src/public/app/Module.js"></script>
+    <!-- endinject -->
+  </body>
+</html>

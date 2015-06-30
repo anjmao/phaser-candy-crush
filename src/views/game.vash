@@ -1,0 +1,12 @@
+@html.extend('layout', function(model){
+
+    @html.block('js-in-header', function(){
+        <script src="/libs/phaser/build/phaser.js"></script>
+        <script src="/app/game/app.js"></script>
+    })
+    @html.block('content', function(model){
+         <h1>Phaser HTML5 mobile first game</h1>
+         <div id="game"></div>
+    })
+
+})

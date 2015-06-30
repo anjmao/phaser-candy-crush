@@ -1,0 +1,22 @@
+@html.extend('layout', function(model){
+
+    @html.block('content', function(model){
+            
+        <h2>@model.channel</h2>
+
+        <table class="table table-bordered">
+            @model.items.forEach(function(msg){
+                <tr>
+                    <td>
+                        @msg.nick
+                    </td>
+                    <td>
+                        <small class="timestamp">@msg.date</small>                    
+                    </td>
+                </tr>
+            })
+        </table>
+
+    })
+
+})
