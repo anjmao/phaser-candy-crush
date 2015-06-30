@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "postinstall": "gulp deploy"
+    "postinstall": "gulp deploy && bower install"
   },
   "repository": {
     "type": "git",
