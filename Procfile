@@ -1,1 +1,1 @@
-web: app.js
+web: deploy/app.js
