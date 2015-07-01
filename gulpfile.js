@@ -10,6 +10,11 @@ var gulp = require('gulp'),
    angularFilesort = require('gulp-angular-filesort');
 
 var config = require('./config');
+var tsProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: true,
+    module: 'commonjs'
+});
 
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
@@ -29,14 +34,14 @@ gulp.task('custom-inject', customInject);
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler)).js
+      .pipe(ts(tsProject)).js
       .pipe(gulp.dest(config.destServer));
 }
 
 function compilePublic(params) {
    var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler));
+      .pipe(ts(tsProject));
 
    return tsResult.js
       .pipe(sourcemaps.write())

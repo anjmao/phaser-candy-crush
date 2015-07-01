@@ -24,7 +24,7 @@
   </head>
 
   <body ng-app="App">
-
+    @html.block('after-body')
     <div class="container">
 
       <!-- Static navbar -->
