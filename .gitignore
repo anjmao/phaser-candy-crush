@@ -32,3 +32,4 @@ src/public/app/**/*.js
 src/routes.js
 src/**/*.js
 deploy/*
+sqllite

@@ -13,7 +13,7 @@ import apiRoutes = require('./api-routes');
 var app = express();
 
 // Configuration
-
+app.set('port', (process.env.PORT || 5000));
 app.set('views', path.join( __dirname, '/views') ); // critical to use path.join on windows
 app.set('view engine', 'vash');
 app.set('view options', { layout: false });
@@ -40,8 +40,8 @@ app.use('/', routes);
 app.use('/api', apiRoutes);
 
 
-app.listen(3000, function(){
-    console.log("Demo Express server listening on port %d in %s mode", 3000, app.settings.env);
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
 
 export var App = app;

@@ -10,6 +10,11 @@ var gulp = require('gulp'),
    angularFilesort = require('gulp-angular-filesort');
 
 var config = require('./config');
+var tsProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: true,
+    module: 'commonjs'
+});
 
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
@@ -20,7 +25,7 @@ gulp.task('clean-deploy', cleanDeploy);
 gulp.task('start', ['compile-server', 'compile-public'], start);
 gulp.task('compile-all',['compile-server', 'compile-public']);
 
-gulp.task('heroku-build',['clean-deploy','copy-package','compile-all'], postBuild);
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject','custom-inject'], postBuild);
 gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
 gulp.task('bower-inject', bowerInject);
@@ -29,14 +34,14 @@ gulp.task('custom-inject', customInject);
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler)).js
+      .pipe(ts(tsProject)).js
       .pipe(gulp.dest(config.destServer));
 }
 
 function compilePublic(params) {
    var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler));
+      .pipe(ts(tsProject));
 
    return tsResult.js
       .pipe(sourcemaps.write())
