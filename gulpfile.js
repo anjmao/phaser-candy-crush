@@ -12,7 +12,7 @@ var gulp = require('gulp'),
 var config = require('./config');
 var tsProject = ts.createProject({
     declarationFiles: false,
-    noExternalResolve: true,
+    noExternalResolve: false,
     module: 'commonjs'
 });
 
@@ -34,14 +34,14 @@ gulp.task('custom-inject', customInject);
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(tsProject)).js
+      .pipe(ts(config.tsCompiler)).js
       .pipe(gulp.dest(config.destServer));
 }
 
 function compilePublic(params) {
    var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(tsProject));
+      .pipe(ts(config.tsCompiler));
 
    return tsResult.js
       .pipe(sourcemaps.write())
@@ -64,8 +64,8 @@ function start(params) {
    }).on('restart', function () {
       console.log('reload');
    }).on('start', function () {
-      watchPublic();
-      watchServer();
+      //watchPublic();
+      //watchServer();
    });
 }
 
@@ -81,6 +81,7 @@ function cleanDeploy(){
 function postBuild(params) {
    var files = [
       './src/**/*.js',
+      './src/**/*.png',
       './src/**/*.css',
       './src/**/*.vash'
       ];
