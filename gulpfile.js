@@ -5,6 +5,7 @@ var gulp = require('gulp'),
    browserify = require('gulp-browserify'),
    clean = require('gulp-clean'),
    changed = require('gulp-changed'),
+   concat = require('gulp-concat'),
    wiredep = require('wiredep').stream,
    inject = require('gulp-inject'),
    angularFilesort = require('gulp-angular-filesort');
@@ -16,14 +17,21 @@ var tsProject = ts.createProject({
     module: 'commonjs'
 });
 
+var tsPublicProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: false
+});
+
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
+gulp.task('compile-game', compileGame);
 gulp.task('watch-server', watchServer);
 gulp.task('watch-public', watchPublic);
+gulp.task('watch-game', watchGame);
 
 gulp.task('clean-deploy', cleanDeploy);
-gulp.task('start', ['compile-server', 'compile-public'], start);
-gulp.task('compile-all',['compile-server', 'compile-public']);
+gulp.task('start', ['compile-all'], start);
+gulp.task('compile-all',['compile-server', 'compile-public', 'compile-game']);
 
 gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject','custom-inject'], postBuild);
 gulp.task('copy-package', copyPackage);
@@ -41,11 +49,23 @@ function compileServer(params) {
 function compilePublic(params) {
    var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
+      .pipe(ts(tsPublicProject));
+
+   return tsResult.js
+      .pipe(concat('public.js'))
+      .pipe(sourcemaps.write('../source-maps'))
+      .pipe(gulp.dest(config.destPublic+'app'));
+}
+
+function compileGame(params) {
+   var tsResult = gulp.src(config.tsGameSrc)
+      .pipe(sourcemaps.init())
       .pipe(ts(config.tsCompiler));
 
    return tsResult.js
-      .pipe(sourcemaps.write())
-      .pipe(gulp.dest(config.destPublic));
+      .pipe(concat('game.js'))
+      .pipe(sourcemaps.write('../source-maps'))
+      .pipe(gulp.dest(config.destPublic+'app/game/'));
 }
 
 function watchServer(params) {
@@ -55,6 +75,10 @@ function watchServer(params) {
 
 function watchPublic(params) {
    gulp.watch(config.tsPublicSrc, ['compile-public']);
+}
+
+function watchGame(params) {
+   gulp.watch(config.tsGameSrc, ['compile-game']);
 }
 
 function start(params) {

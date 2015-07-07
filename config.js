@@ -16,6 +16,11 @@ var config = {
 	],
 	tsPublicSrc : [
 	    srcAngular + '**/*.ts',
+		 '!'+srcAngular + 'game/**/*.ts',
+		 '!'+srcAngular + 'typings**/*.ts'
+	],
+	tsGameSrc : [
+	    srcAngular + 'game/**/*.ts',
 		'!'+srcAngular + 'typings**/*.ts'
 	],
 	publicJsInject : [
@@ -23,7 +28,7 @@ var config = {
 	],
 	mainFile : destServer + 'app.js',
 	destServer : destServer,
-	destPublic : srcAngular,
+	destPublic : srcPublic,
 	srcServer : srcServer
 };
 

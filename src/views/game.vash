@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,12 +20,11 @@
 
     <!-- Custom styles for this template -->
     <link href="/css/site.css" rel="stylesheet">
-<script src="/libs/phaser/build/phaser.js"></script>
-        <script src="/app/game/candy-game.js"></script>
+
   </head>
 
   <body>
-<script>
+<!--<script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '109135076094590',
@@ -66,14 +61,13 @@ FB.getLoginStatus(function(response) {
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-</script>
+</script>-->
 
     <div class="container">
        <h1 id="fb-welcome"></h1>
 <div id="game"></div>
       
     </div> <!-- /container -->
-    
     <!-- bower:js -->
     <script src="/libs/jquery/dist/jquery.js"></script>
     <script src="/libs/bootstrap/dist/js/bootstrap.js"></script>
@@ -81,6 +75,8 @@ FB.getLoginStatus(function(response) {
     <script src="/libs/angular/angular.js"></script>
     <script src="/libs/angular-smart-table/dist/smart-table.js"></script>
     <script src="/libs/angular-ui-router/release/angular-ui-router.js"></script>
+    
+    <script src="/app/game/game.js"></script>
     <!-- endbower -->
     
     <!-- inject:js -->

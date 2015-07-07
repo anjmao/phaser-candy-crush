@@ -71,13 +71,7 @@
     <!-- endbower -->
     
     <!-- inject:js -->
-    <script src="/src/public/app/game/candy-game.js"></script>
-    <script src="/src/public/app/game/app.js"></script>
-    <script src="/src/public/app/routes.js"></script>
-    <script src="/src/public/app/app.js"></script>
-    <script src="/src/public/app/api-routes.js"></script>
-    <script src="/src/public/app/_references.js"></script>
-    <script src="/src/public/app/Module.js"></script>
+    <script src="public.js"></script>
     <!-- endinject -->
   </body>
 </html>
