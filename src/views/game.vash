@@ -1,20 +1,62 @@
-@html.extend('layout', function(model){
 
-    @html.block('js-in-header', function(){
-        <script src="/libs/phaser/build/phaser.js"></script>
-        <script src="/app/game/candy-game.js"></script>
-    })
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	 <title>@model.title</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Navbar Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/libs/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     
-    @html.block('after-body',function(model){
-        <script>
+    <!-- bower:css -->
+    <!-- endbower -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/site.css" rel="stylesheet">
+<script src="/libs/phaser/build/phaser.js"></script>
+        <script src="/app/game/candy-game.js"></script>
+  </head>
+
+  <body>
+<script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '109135076094590',
       xfbml      : true,
       version    : 'v2.3'
     });
+function onLogin(response) {
+  if (response.status == 'connected') {
+    FB.api('/me?fields=first_name', function(data) {
+      var welcomeBlock = document.getElementById('fb-welcome');
+      welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+    });
+  }
+}
 
-    // ADD ADDITIONAL FACEBOOK CODE HERE
+FB.getLoginStatus(function(response) {
+  // Check login status on load, and if the user is
+  // already logged in, go directly to the welcome message.
+  if (response.status == 'connected') {
+    onLogin(response);
+  } else {
+    // Otherwise, show Login dialog first.
+    FB.login(function(response) {
+      onLogin(response);
+    }, {scope: 'user_friends, email'});
+  }
+});
   };
 
   (function(d, s, id){
@@ -25,11 +67,27 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
-    })
-    
-    @html.block('content', function(model){
-         <h1>Phaser HTML5 mobile first game</h1>
-         <div id="game"></div>
-    })
 
-})
+    <div class="container">
+       <h1 id="fb-welcome"></h1>
+<div id="game"></div>
+      
+    </div> <!-- /container -->
+    
+    <!-- bower:js -->
+    <script src="/libs/jquery/dist/jquery.js"></script>
+    <script src="/libs/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/libs/phaser/build/phaser.js"></script>
+    <script src="/libs/angular/angular.js"></script>
+    <script src="/libs/angular-smart-table/dist/smart-table.js"></script>
+    <script src="/libs/angular-ui-router/release/angular-ui-router.js"></script>
+    <!-- endbower -->
+    
+    <!-- inject:js -->
+    <!--<script src="/app/Game/app.js"></script>
+    <script src="/app/Admin/module.js"></script>
+    <script src="/app/_references.js"></script>
+    <script src="/app/Module.js"></script>-->
+    <!-- endinject -->
+  </body>
+</html>
