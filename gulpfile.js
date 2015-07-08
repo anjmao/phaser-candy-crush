@@ -22,12 +22,18 @@ var tsPublicProject = ts.createProject({
     noExternalResolve: false
 });
 
+var tsPublicGameProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: false
+});
+
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
 gulp.task('compile-game', compileGame);
-gulp.task('watch-server', watchServer);
-gulp.task('watch-public', watchPublic);
-gulp.task('watch-game', watchGame);
+gulp.task('watch-server', ['compile-server'],watchServer);
+gulp.task('watch-public', ['compile-public'], watchPublic);
+gulp.task('watch-game',['compile-game'], watchGame);
+gulp.task('watch-all', ['watch-server','watch-public','watch-game']);
 
 gulp.task('clean-deploy', cleanDeploy);
 gulp.task('start', ['compile-all'], start);
@@ -60,7 +66,7 @@ function compilePublic(params) {
 function compileGame(params) {
    var tsResult = gulp.src(config.tsGameSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler));
+      .pipe(ts(tsPublicGameProject));
 
    return tsResult.js
       .pipe(concat('game.js'))

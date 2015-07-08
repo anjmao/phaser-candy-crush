@@ -23,7 +23,7 @@
 
   </head>
 
-  <body>
+  <body ng-app="GameApp">
 <!--<script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -63,9 +63,9 @@ FB.getLoginStatus(function(response) {
    }(document, 'script', 'facebook-jssdk'));
 </script>-->
 
-    <div class="container">
+    <div class="container" ng-controller="IndexController as vm">
        <h1 id="fb-welcome"></h1>
-<div id="game"></div>
+       <div game-directive></div>
       
     </div> <!-- /container -->
     <!-- bower:js -->
@@ -73,7 +73,6 @@ FB.getLoginStatus(function(response) {
     <script src="/libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/libs/phaser/build/phaser.js"></script>
     <script src="/libs/angular/angular.js"></script>
-    <script src="/libs/angular-smart-table/dist/smart-table.js"></script>
     <script src="/libs/angular-ui-router/release/angular-ui-router.js"></script>
     
     <script src="/app/game/game.js"></script>
