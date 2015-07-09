@@ -2,13 +2,12 @@ var gulp = require('gulp'),
    nodemon = require('gulp-nodemon'),
    ts = require('gulp-typescript'),
    sourcemaps = require('gulp-sourcemaps'),
-   browserify = require('gulp-browserify'),
    clean = require('gulp-clean'),
    changed = require('gulp-changed'),
    concat = require('gulp-concat'),
    wiredep = require('wiredep').stream,
    inject = require('gulp-inject'),
-   angularFilesort = require('gulp-angular-filesort');
+   browserSync = require('browser-sync').create();
 
 var config = require('./config');
 var tsProject = ts.createProject({
@@ -27,23 +26,43 @@ var tsPublicGameProject = ts.createProject({
     noExternalResolve: false
 });
 
+//main task for dev
+gulp.task('start', ['browser-sync','watch-game']);
+
+//main task for deploy to heroku
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject'], postBuild);
+
+
+gulp.task('browser-sync',['start-server'], browserSyncTask);
+gulp.task('start-server', ['compile-all'], startServer);
+
+gulp.task('compile-all',['compile-server', 'compile-public', 'compile-game']);
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
 gulp.task('compile-game', compileGame);
+
+gulp.task('watch-all', ['watch-server','watch-public','watch-game']);
 gulp.task('watch-server', ['compile-server'],watchServer);
 gulp.task('watch-public', ['compile-public'], watchPublic);
 gulp.task('watch-game',['compile-game'], watchGame);
-gulp.task('watch-all', ['watch-server','watch-public','watch-game']);
 
 gulp.task('clean-deploy', cleanDeploy);
-gulp.task('start', ['compile-all'], start);
-gulp.task('compile-all',['compile-server', 'compile-public', 'compile-game']);
-
-gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject','custom-inject'], postBuild);
-gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
+gulp.task('copy-package', copyPackage);
+
 gulp.task('bower-inject', bowerInject);
 gulp.task('custom-inject', customInject);
+
+
+
+function browserSyncTask(params){
+   browserSync.init(null, {
+		proxy: "http://localhost:5000",
+        files: ["public/**/*.*"],
+        browser: "google chrome",
+        port: 7000,
+	});
+}
 
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
@@ -84,19 +103,26 @@ function watchPublic(params) {
 }
 
 function watchGame(params) {
-   gulp.watch(config.tsGameSrc, ['compile-game']);
+   gulp.watch(config.tsGameSrc, ['compile-game']).on('change', browserSync.reload);
 }
 
-function start(params) {
-   nodemon({
+function startServer(cb) {
+   
+   var started = false;
+   
+   return nodemon({
       script: config.mainFile,
+      ignore: ["src/app/public/**/*.js"],
       ext: 'js',
    }).on('restart', function () {
-      console.log('reload');
+      
    }).on('start', function () {
-      //watchPublic();
-      //watchServer();
+      if (!started) {
+			cb();
+			started = true; 
+		} 
    });
+   
 }
 
 function copyPackage(params){

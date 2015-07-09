@@ -6,4 +6,5 @@ module GameApp{
 			return Math.floor((Math.random() * maxNumber) + 1);
 		}
 	}
+	
 }

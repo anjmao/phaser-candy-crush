@@ -3,16 +3,16 @@
 module GameApp.Objects {
 	'use strict';
 
-	export interface ICookieModel {
+	
+	
+	export interface ICookie{
 		column: number;
 		row: number;
 		cookieType: CookieType;
 		sprite: any;
-	}
-	
-	export interface ICookie extends ICookieModel{
-		spriteName(): string;
-		highlightedSpriteName(): string;
+		
+		spriteName?: () => string;
+		highlightedSpriteName?: () => string;
 	}
 	
 	export enum CookieType{
@@ -29,6 +29,12 @@ module GameApp.Objects {
 		row: number;
 		cookieType: number;
 		sprite: any;
+		
+		constructor(column: number,row: number,cookieType: number){
+			this.column = column;
+			this.row = row;
+			this.cookieType = cookieType;
+		}
 
 	   spriteNames: Array<string> = [
 			"Croissant",
