@@ -8,3 +8,5 @@
 /// <reference path='objects/cookie.ts' />
 /// <reference path='objects/level.ts' />
 /// <reference path='objects/config.ts' />
+
+/// <reference path='game-helpers.ts' />

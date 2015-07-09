@@ -3,15 +3,25 @@
 module GameApp.Objects {
 	'use strict';
 
-	export interface ICookie {
+	export interface ICookieModel {
 		column: number;
 		row: number;
-		cookieType: number;
+		cookieType: CookieType;
 		sprite: any;
-
+	}
+	
+	export interface ICookie extends ICookieModel{
 		spriteName(): string;
 		highlightedSpriteName(): string;
-
+	}
+	
+	export enum CookieType{
+		croissant = 1,
+			cupcake = 2,
+			danish = 3,
+			donut = 4,
+			macaroon = 5,
+			sugarCookie = 6
 	}
 
 	export class Cookie implements ICookie {
