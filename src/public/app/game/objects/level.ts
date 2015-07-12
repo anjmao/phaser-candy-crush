@@ -50,13 +50,7 @@ module GameApp.Objects {
 			return array;
 		}
 
-		private cookieAtColumn(column: number, row: number) {
-			if (column >= 0 && column < this.numColumns) {
-				throw 'Invalid column: ' + column;
-			}
-			if (row >= 0 && row < this.numRows) {
-				throw 'Invalid row: ' + row;
-			}
+	   cookieAtColumn(column: number, row: number) {
 			return this.cookies[column][row]
 		}
 

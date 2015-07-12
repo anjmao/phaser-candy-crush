@@ -15,6 +15,11 @@ module GameApp.Objects {
 		highlightedSpriteName?: () => string;
 	}
 	
+	export interface ICookiePosition{
+		column: number;
+		row: number;
+	}
+	
 	export enum CookieType{
 		croissant = 1,
 			cupcake = 2,
