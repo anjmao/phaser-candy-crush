@@ -1,4 +1,14 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-	"editor.tabSize": 3
+	"editor.tabSize": 3,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"src/**/*.js": true
+	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/bower_components": true,
+		"src/**/*js": true
+	}
 }

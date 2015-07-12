@@ -7,6 +7,6 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', IndexController.index);
 router.get('/about', IndexController.aboutUs);
-router.post('/game', IndexController.game);
+router.get('/game', IndexController.game);
 
 export = router;

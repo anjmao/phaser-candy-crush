@@ -2,12 +2,12 @@ var gulp = require('gulp'),
    nodemon = require('gulp-nodemon'),
    ts = require('gulp-typescript'),
    sourcemaps = require('gulp-sourcemaps'),
-   browserify = require('gulp-browserify'),
    clean = require('gulp-clean'),
    changed = require('gulp-changed'),
+   concat = require('gulp-concat'),
    wiredep = require('wiredep').stream,
    inject = require('gulp-inject'),
-   angularFilesort = require('gulp-angular-filesort');
+   browserSync = require('browser-sync').create();
 
 var config = require('./config');
 var tsProject = ts.createProject({
@@ -16,20 +16,53 @@ var tsProject = ts.createProject({
     module: 'commonjs'
 });
 
+var tsPublicProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: false
+});
+
+var tsPublicGameProject = ts.createProject({
+    declarationFiles: false,
+    noExternalResolve: false
+});
+
+//main task for dev
+gulp.task('start', ['browser-sync','watch-game']);
+
+//main task for deploy to heroku
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all'], postBuild);
+
+
+gulp.task('browser-sync',['start-server'], browserSyncTask);
+gulp.task('start-server', ['compile-all'], startServer);
+
+gulp.task('compile-all',['compile-server', 'compile-public', 'compile-game']);
 gulp.task('compile-server', compileServer);
 gulp.task('compile-public', compilePublic);
-gulp.task('watch-server', watchServer);
-gulp.task('watch-public', watchPublic);
+gulp.task('compile-game', compileGame);
+
+gulp.task('watch-all', ['watch-server','watch-public','watch-game']);
+gulp.task('watch-server', ['compile-server'],watchServer);
+gulp.task('watch-public', ['compile-public'], watchPublic);
+gulp.task('watch-game',['compile-game'], watchGame);
 
 gulp.task('clean-deploy', cleanDeploy);
-gulp.task('start', ['compile-server', 'compile-public'], start);
-gulp.task('compile-all',['compile-server', 'compile-public']);
-
-gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject','custom-inject'], postBuild);
-gulp.task('copy-package', copyPackage);
 gulp.task('clean-js', cleanJs);
+gulp.task('copy-package', copyPackage);
+
 gulp.task('bower-inject', bowerInject);
 gulp.task('custom-inject', customInject);
+
+
+
+function browserSyncTask(params){
+   browserSync.init(null, {
+		proxy: "http://localhost:5000",
+        files: ["public/**/*.*"],
+        browser: "google chrome",
+        port: 7000,
+	});
+}
 
 function compileServer(params) {
    return gulp.src(config.tsServerSrc)
@@ -41,11 +74,23 @@ function compileServer(params) {
 function compilePublic(params) {
    var tsResult = gulp.src(config.tsPublicSrc)
       .pipe(sourcemaps.init())
-      .pipe(ts(config.tsCompiler));
+      .pipe(ts(tsPublicProject));
 
    return tsResult.js
-      .pipe(sourcemaps.write())
-      .pipe(gulp.dest(config.destPublic));
+      .pipe(concat('public.js'))
+      .pipe(sourcemaps.write('../source-maps'))
+      .pipe(gulp.dest(config.destPublic+'app'));
+}
+
+function compileGame(params) {
+   var tsResult = gulp.src(config.tsGameSrc)
+      .pipe(sourcemaps.init())
+      .pipe(ts(tsPublicGameProject));
+
+   return tsResult.js
+      .pipe(concat('game.js'))
+      .pipe(sourcemaps.write('../source-maps'))
+      .pipe(gulp.dest(config.destPublic+'app/game/'));
 }
 
 function watchServer(params) {
@@ -57,16 +102,27 @@ function watchPublic(params) {
    gulp.watch(config.tsPublicSrc, ['compile-public']);
 }
 
-function start(params) {
-   nodemon({
+function watchGame(params) {
+   gulp.watch(config.tsGameSrc, ['compile-game']).on('change', browserSync.reload);
+}
+
+function startServer(cb) {
+   
+   var started = false;
+   
+   return nodemon({
       script: config.mainFile,
+      ignore: ["src/public/*.*"],
       ext: 'js',
    }).on('restart', function () {
-      console.log('reload');
+      
    }).on('start', function () {
-      //watchPublic();
-      //watchServer();
+      if (!started) {
+			cb();
+			started = true; 
+		} 
    });
+   
 }
 
 function copyPackage(params){
@@ -81,6 +137,7 @@ function cleanDeploy(){
 function postBuild(params) {
    var files = [
       './src/**/*.js',
+      './src/**/*.json',
       './src/**/*.png',
       './src/**/*.css',
       './src/**/*.vash'
