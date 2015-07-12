@@ -2,6 +2,7 @@
 
 import GameObjects = GameApp.Objects;
 import Level = GameApp.Objects.Level;
+import IJsonLevel = GameApp.Objects.IJsonLevel;
 import Cookie = GameObjects.Cookie;
 
 module GameApp.States {
@@ -9,24 +10,27 @@ module GameApp.States {
 
    export class GamePlay extends Phaser.State {
 
-      tileWidth: number = 32.0;
-      tileHeight: number = 36.0;
+      tileWidth: number = 64.0;
+      tileHeight: number = 72.0;
       
-      level: GameObjects.ILevel;
+      level: GameObjects.Level;
       cookieLayer: Phaser.Group;
       enemies: Phaser.Group;
       
-      constructor(game: Phaser.Game, x: number, y: number) {
-           super();
-            this.level = new Level();
-            
-        }
+      
+      private initLevel(levelName: string){
+         var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
+         this.level = new Level();
+         this.level.initWithLevel(levelData);
+      }
 
       create() {
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
          
+         
+         this.initLevel('level1');
          this.beginGame();
 
       }
@@ -36,6 +40,7 @@ module GameApp.States {
       }
       
       shuffle(){
+         
          var cookies: Cookie[] = this.level.shuffle();
          this.addSpritesForCookies(cookies);
       }
@@ -43,9 +48,9 @@ module GameApp.States {
       addSpritesForCookies(cookies: Cookie[]){
          
          this.cookieLayer = this.game.add.group();
-         
+         //com
          //this.cookieLayer.position = new Phaser.Point(10,50);
-
+         
          cookies.forEach((cookie: Cookie)=>{
             var point = this.pointForCookie(cookie.column, cookie.row);
             this.cookieLayer.create(point.x, point.y, cookie.spriteName());

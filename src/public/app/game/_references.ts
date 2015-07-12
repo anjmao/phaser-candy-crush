@@ -8,6 +8,7 @@
 
 /// <reference path='objects/cookie.ts' />
 /// <reference path='objects/level.ts' />
+/// <reference path='objects/tile.ts' />
 /// <reference path='objects/config.ts' />
 
 /// <reference path='states/boot.ts' />

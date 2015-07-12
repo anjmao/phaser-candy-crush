@@ -112,7 +112,7 @@ function startServer(cb) {
    
    return nodemon({
       script: config.mainFile,
-      ignore: ["src/app/public/**/*.js"],
+      ignore: ["src/public/*.*"],
       ext: 'js',
    }).on('restart', function () {
       
