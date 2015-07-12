@@ -33,3 +33,5 @@ src/routes.js
 src/**/*.js
 deploy/*
 sqllite
+src/public/app/source-maps/game.js.map
+src/public/source-maps/public.js.map
