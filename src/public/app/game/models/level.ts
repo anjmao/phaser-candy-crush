@@ -1,6 +1,6 @@
 /// <reference path='../_references.ts' />
 
-module GameApp.Objects {
+module GameApp.Models {
 	'use strict';
 
    export interface IJsonLevel{
@@ -8,15 +8,6 @@ module GameApp.Objects {
 		targetScore: number;
 		moves: number
 	}
-//    export interface ILevel {
-// 		cookies: Cookie[][];
-// 
-// 		shuffle(): Array<Cookie>; //TODO: change any
-// 		createInitialCookies(): Array<Cookie>;
-// 		cookieAtColumn(column: number, row: number): Cookie;
-// 		createCookieAtColumn(column: number, row: number, cookieType: CookieType): Cookie;
-// 		initWithLevel(level: IJsonLevel);
-// 	}
 
 	export class Level {
 		numColumns: number = Config.numColumns;
@@ -98,7 +89,21 @@ module GameApp.Objects {
 			}
 		}
 		
-		
+		performSwap(swap: Swap){
+			var columnA: number = swap.cookieA.column,
+				 rowA: number = swap.cookieA.row,
+				 columnB: number = swap.cookieB.column,
+				 rowB: number = swap.cookieB.row;
+				 
+			this.cookies[columnA][rowA] = swap.cookieB;
+			swap.cookieB.column = columnA;
+			swap.cookieB.row = rowA;
+			
+			this.cookies[columnB][rowB] = swap.cookieA;
+			swap.cookieA.column = columnB;
+			swap.cookieA.row = rowB;
+			
+		}
 		
 	}
 }

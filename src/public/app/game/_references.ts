@@ -5,11 +5,11 @@
 /// <reference path='index-controller.ts' />
 
 
-
-/// <reference path='objects/cookie.ts' />
-/// <reference path='objects/level.ts' />
-/// <reference path='objects/tile.ts' />
-/// <reference path='objects/config.ts' />
+/// <reference path='models/tile.ts' />
+/// <reference path='models/cookie.ts' />
+/// <reference path='models/level.ts' />
+/// <reference path='models/swap.ts' />
+/// <reference path='models/config.ts' />
 
 /// <reference path='states/boot.ts' />
 /// <reference path='states/preloader.ts' />

@@ -1,6 +1,6 @@
 /// <reference path='../_references.ts' />
 
-module GameApp.Objects {
+module GameApp.Models {
 	'use strict';
 
 	
@@ -9,7 +9,7 @@ module GameApp.Objects {
 		column: number;
 		row: number;
 		cookieType: CookieType;
-		sprite: any;
+		sprite: Phaser.Sprite;
 		
 		spriteName?: () => string;
 		highlightedSpriteName?: () => string;
@@ -33,7 +33,7 @@ module GameApp.Objects {
 		column: number;
 		row: number;
 		cookieType: number;
-		sprite: any;
+		sprite: Phaser.Sprite;
 		
 		constructor(column: number,row: number,cookieType: number){
 			this.column = column;

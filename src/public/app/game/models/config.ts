@@ -1,6 +1,6 @@
 /// <reference path='../_references.ts' />
 
-module GameApp.Objects {
+module GameApp.Models {
 	'use strict'; 
 	
    export class Config{

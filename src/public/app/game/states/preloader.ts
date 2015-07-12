@@ -31,8 +31,7 @@ module GameApp.States {
       }
 
       create() {
-         console.log('load json data',this.game.cache.getJSON('level1'));
-         
+ 
          //var tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
          //tween.onComplete.add(this.startMainMenu, this);
          this.game.state.start('GamePlay', true, false);

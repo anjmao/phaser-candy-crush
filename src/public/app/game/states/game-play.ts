@@ -1,10 +1,11 @@
 /// <reference path='../_references.ts' />
 
-import GameObjects = GameApp.Objects;
-import Level = GameApp.Objects.Level;
-import IJsonLevel = GameApp.Objects.IJsonLevel;
+import GameObjects = GameApp.Models;
+import Level = GameApp.Models.Level;
+import Swap = GameObjects.Swap;
+import IJsonLevel = GameApp.Models.IJsonLevel;
 import Cookie = GameObjects.Cookie;
-import GameConfig = GameApp.Objects.Config;
+import GameConfig = GameApp.Models.Config;
 
 module GameApp.States {
    'use strict';
@@ -67,6 +68,8 @@ module GameApp.States {
             createdCookie.inputEnabled = true;
             createdCookie.events.onInputDown.add(this.touchesBegan, this);
             createdCookie.events.onInputUp.add(this.touchesEnd, this);
+            
+            cookie.sprite = createdCookie;
          })
       }
 
@@ -176,11 +179,24 @@ module GameApp.States {
          
          var fromCookie = this.level.cookieAtColumn(this.swipeFromColumn, this.swipeFromRow);
          
-         console.log('fromCookie', fromCookie);
-         console.log('toCookie', toCookie);
+         var swap = new Swap();
+         swap.cookieA = fromCookie;
+         swap.cookieB = toCookie;
          
+         this.level.performSwap(swap);
+         this.animateSwap(swap)
          
       }
+      
+      animateSwap(swap: Swap){
+         
+         var cookieSrpiteA = swap.cookieA.sprite,
+             cookieSrpiteB = swap.cookieB.sprite;
+         
+         this.game.add.tween(swap.cookieA.sprite).to({x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y}, 100, Phaser.Easing.Linear.None, true);
+         this.game.add.tween(swap.cookieB.sprite).to({x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y}, 100, Phaser.Easing.Linear.None, true);
+      }
+
 
    }
 }
