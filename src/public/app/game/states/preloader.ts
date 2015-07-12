@@ -22,11 +22,11 @@ module GameApp.States {
          
          this.game.load.image('Tile', assets+'Tile@2x.png');
          
-         this.game.load.json('level0','app/game/levels/Level_0.json');
-         this.game.load.json('level1','app/game/levels/Level_1.json');
-         this.game.load.json('level2','app/game/levels/Level_2.json');
-         this.game.load.json('level3','app/game/levels/Level_3.json');
-         this.game.load.json('level4','app/game/levels/Level_4.json');
+         this.game.load.json('level0', assets+'levels/Level_0.json');
+         this.game.load.json('level1',assets+'levels/Level_1.json');
+         this.game.load.json('level2',assets+'levels/Level_2.json');
+         this.game.load.json('level3',assets+'levels/Level_3.json');
+         this.game.load.json('level4',assets+'levels/Level_4.json');
          
       }
 
