@@ -14,14 +14,16 @@ module GameApp.States {
       tileHeight: number = 72.0;
       
       level: GameObjects.Level;
+      
       cookieLayer: Phaser.Group;
-      enemies: Phaser.Group;
+      tilesLayer: Phaser.Group;
       
       
       private initLevel(levelName: string){
          var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
          this.level = new Level();
          this.level.initWithLevel(levelData);
+         this.addTiles();
       }
 
       create() {
@@ -48,54 +50,32 @@ module GameApp.States {
       addSpritesForCookies(cookies: Cookie[]){
          
          this.cookieLayer = this.game.add.group();
-         //com
-         //this.cookieLayer.position = new Phaser.Point(10,50);
+         this.cookieLayer.z = 2;
          
          cookies.forEach((cookie: Cookie)=>{
-            var point = this.pointForCookie(cookie.column, cookie.row);
+            var point = this.pointForColum(cookie.column, cookie.row);
             this.cookieLayer.create(point.x, point.y, cookie.spriteName());
          })
       }
       
-      pointForCookie(column: number, row: number): Phaser.Point{
+      pointForColum(column: number, row: number): Phaser.Point{
          return new Phaser.Point(column * this.tileWidth + this.tileWidth/2 ,row * this.tileHeight + this.tileHeight/2);
       }
+      
+      addTiles(){
+         this.tilesLayer = this.game.add.group();
+         this.tilesLayer.z = 1;
+         
+         for (var row: number = 0; row < GameObjects.Config.numColumns; row++) {
+				for (var column: number = 0; column < GameObjects.Config.numColumns; column++) {
+               if(this.level.tileAtColumn(column, row) != null){
+                  var point = this.pointForColum(column, row);
+                  this.tilesLayer.create(point.x, point.y, 'Tile');
+               }
+            }
+         }
+      }
 
-//       createCookiesGrid() {
-//          var gems = this.game.add.group();
-// 
-//          for (var i = 0; i < 9; i++) {
-//             for (var j = 0; j < 9; j++) {
-//                var gem = gems.create(i * 32, j * 32, "GEMS");
-//                gem.name = 'gem' + i.toString() + 'x' + j.toString();
-//                gem.inputEnabled = true;
-//                // gem.events.onInputDown.add(() => {}, this);
-//                // gem.events.onInputUp.add(() => {}, this);
-//                this.randomizeGemColor(gem);
-//                this.setGemPos(gem, i, j); // each gem has a position on the board
-//             
-//             }
-//          }
-//       }
-// 
-// 
-//       setGemPos(gem, posX, posY) {
-// 
-//          gem.posX = posX;
-//          gem.posY = posY;
-//          gem.id = posX + posY * 9;
-// 
-//       }
-// 
-//       randomizeGemColor(gem) {
-// 
-//          gem.frame = this.game.rnd.integerInRange(0, gem.animations.frameTotal - 1);
-// 
-//       }
-// 
-//       moveCallback(pointer: Phaser.Pointer, x: number, y: number, fromClick) {
-// 
-//       }
 
 
    }

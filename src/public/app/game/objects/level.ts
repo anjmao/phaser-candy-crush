@@ -83,13 +83,7 @@ module GameApp.Objects {
 			}
 		}
 		
-		private tileAtColumn(column: number, row: number): Tile{
-			if (column >= 0 && column < this.numColumns) {
-				throw 'Invalid column: ' + column;
-			}
-			if (row >= 0 && row < this.numRows) {
-				throw 'Invalid row: ' + row;
-			}
+	   tileAtColumn(column: number, row: number): Tile{
 			return this.tiles[column][row]
 		}
 		
