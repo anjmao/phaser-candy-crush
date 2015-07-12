@@ -30,7 +30,7 @@ var tsPublicGameProject = ts.createProject({
 gulp.task('start', ['browser-sync','watch-game']);
 
 //main task for deploy to heroku
-gulp.task('heroku-build',['clean-deploy','copy-package','compile-all','bower-inject'], postBuild);
+gulp.task('heroku-build',['clean-deploy','copy-package','compile-all'], postBuild);
 
 
 gulp.task('browser-sync',['start-server'], browserSyncTask);
@@ -137,6 +137,7 @@ function cleanDeploy(){
 function postBuild(params) {
    var files = [
       './src/**/*.js',
+      './src/**/*.json',
       './src/**/*.png',
       './src/**/*.css',
       './src/**/*.vash'
