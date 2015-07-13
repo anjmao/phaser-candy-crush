@@ -22,6 +22,8 @@ module GameApp.States {
 
       swipeFromColumn: number;
       swipeFromRow: number;
+      
+      userInteractionEnabled: boolean;
 
 
 
@@ -167,6 +169,9 @@ module GameApp.States {
       }
       
       trySwapHorizontal(horzDelta: number, vertDelta: number){
+         
+         this.userInteractionEnabled = false;
+         
          var toColumn = this.swipeFromColumn + horzDelta;
          var toRow = this.swipeFromRow + vertDelta;
          
@@ -184,6 +189,15 @@ module GameApp.States {
          
          this.level.performSwap(swap);
          this.animateSwap(swap)
+            
+         // if(this.level.isPossibleSwap(swap)){
+         //    this.userInteractionEnabled = true;
+         //    
+         // }
+         // else{
+         //    this.userInteractionEnabled = true;
+         // }
+         
          
       }
       

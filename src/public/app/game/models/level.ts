@@ -29,8 +29,22 @@ module GameApp.Models {
 				this.detectPossibleSwaps();
 			}
 			while (this.possibleSwaps.length == 0)
-         				console.log(this.possibleSwaps);
+			
+         console.log(this.possibleSwaps);
+			
 			return set;
+		}
+		
+		isPossibleSwap(swap: Swap): boolean{
+			
+			this.possibleSwaps.forEach((possibleSwap) => {
+				var isPossible = (swap.cookieA == possibleSwap.cookieA && swap.cookieB == possibleSwap.cookieB) ||
+				                 (swap.cookieB == possibleSwap.cookieA && swap.cookieA == possibleSwap.cookieB);
+				
+				if(isPossible) return true;
+			})
+			
+			return false;
 		}
 
 		private hasChainAtColumn(column: number, row: number): boolean {
