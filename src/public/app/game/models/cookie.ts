@@ -29,7 +29,7 @@ module GameApp.Models {
 			sugarCookie = 6
 	}
 
-	export class Cookie implements ICookie {
+	export class Cookie {
 		column: number;
 		row: number;
 		cookieType: number;

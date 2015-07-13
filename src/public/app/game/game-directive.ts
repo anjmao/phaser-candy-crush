@@ -3,7 +3,7 @@
 module GameApp {
 	'use strict';
 
-	 export function GameDirective($injector): ng.IDirective {
+	 export function GameDirective($injector): angular.IDirective {
 		
 		var linkFn = function(scope, ele, attrs) {
 			new CandyGame(scope, $injector);

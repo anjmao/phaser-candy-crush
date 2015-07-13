@@ -23,7 +23,6 @@ module GameApp.States {
       swipeFromColumn: number;
       swipeFromRow: number;
 
-      selectedCookie: Cookie = null;
 
 
       private initLevel(levelName: string) {

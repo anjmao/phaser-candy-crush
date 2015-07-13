@@ -3,7 +3,7 @@
 module GameApp.Models {
 	'use strict';
 
-   export interface IJsonLevel{
+   export interface IJsonLevel {
 		tiles: number[][];
 		targetScore: number;
 		moves: number
@@ -12,98 +12,221 @@ module GameApp.Models {
 	export class Level {
 		numColumns: number = Config.numColumns;
 		numRows: number = Config.numColumns;
-		
+
 		cookies: Cookie[][];
 		tiles: Tile[][];
-		
-		constructor(){
+		possibleSwaps: Swap[];
+
+		constructor() {
 			this.createCookiesArray();
 		}
 
 		shuffle(): Array<Cookie> {
-			return this.createInitialCookies();
+			var set: Cookie[];
+
+			do {
+				set = this.createInitialCookies();
+				this.detectPossibleSwaps();
+			}
+			while (this.possibleSwaps.length == 0)
+         				console.log(this.possibleSwaps);
+			return set;
+		}
+
+		private hasChainAtColumn(column: number, row: number): boolean {
+			
+			var cookie = this.cookies[column][row],
+			    cookieType: CookieType;
+				 
+			if(cookie) {
+				cookieType = cookie.cookieType;
+			}
+			else{
+				cookieType = 0;
+			}
+			
+			var horzLength = 1;
+			for (var i = column - 1; i >= 0 && this.cookies[i][row] && this.cookies[i][row].cookieType == cookieType; i-- , horzLength++);
+			for (var i = column + 1; i < this.numColumns && this.cookies[i][row] && this.cookies[i][row].cookieType == cookieType; i++ , horzLength++);
+			if (horzLength >= 3) return true;
+
+			var vertLength = 1;
+			for (var i = row - 1; i >= 0 && this.cookies[column][i] && this.cookies[column][i].cookieType == cookieType; i-- , vertLength++);
+			for (var i = row + 1; i < this.numRows && this.cookies[column][i] && this.cookies[column][i].cookieType == cookieType; i++ , vertLength++);
+			return (vertLength >= 3);
+		}
+
+		private detectPossibleSwaps() {
+			var possibleSwaps: Swap[] = [];
+
+			for (var row = 0; row < GameConfig.numRows; row++) {
+				for (var column = 0; column < GameConfig.numColumns; column++) {
+
+					var cookie = this.cookies[column][row];
+					if (cookie) {
+ 
+						// Is it possible to swap this cookie with the one on the right?
+						if (column < this.numColumns - 1) {
+							// Have a cookie in this spot? If there is no tile, there is no cookie.
+							var other = this.cookies[column + 1][row];
+							if (other) {
+								// Swap them
+								this.cookies[column][row] = other;
+								this.cookies[column + 1][row] = cookie;
+ 
+								// Is either cookie now part of a chain?
+								if (this.hasChainAtColumn(column + 1, row) ||
+									 this.hasChainAtColumn(column, row)) {
+
+									var swap = new Swap();
+									swap.cookieA = cookie;
+									swap.cookieB = other;
+									possibleSwaps.push(swap);
+								}
+ 
+								// Swap them back
+								this.cookies[column][row] = cookie;
+								this.cookies[column + 1][row] = other;
+							}
+						}
+
+						if (row < this.numRows - 1) {
+
+							var other = this.cookies[column][row + 1];
+							if (other) {
+								// Swap them
+								this.cookies[column][row] = other;
+								this.cookies[column][row + 1] = cookie;
+
+								if (this.hasChainAtColumn(column, row + 1) ||
+									 this.hasChainAtColumn(column, row)) {
+
+									var swap = new Swap();
+									swap.cookieA = cookie;
+									swap.cookieB = other;
+									possibleSwaps.push(swap);
+								}
+
+								this.cookies[column][row] = cookie;
+								this.cookies[column][row + 1] = other;
+							}
+						}
+					}
+				}
+			}
+
+			this.possibleSwaps = possibleSwaps;
 		}
 
 		createInitialCookies(): Array<Cookie> {
 			var array: Cookie[] = [];
 			for (var row: number = 0; row < this.numRows; row++) {
 				for (var column: number = 0; column < this.numColumns; column++) {
-					 
-					if(this.tiles[column][row] != null){
-						var cookieType: CookieType = GameHelpers.getRandomNumber(Config.numCookieTypes);
-					   var cookie: Cookie = this.createCookieAtColumn(column, row, cookieType);
+
+					if (this.tiles[column][row] != null) {
+						var cookieType: CookieType = this.calculateCookieType(column, row);
+						var cookie: Cookie = this.createCookieAtColumn(column, row, cookieType);
+						
+			         this.cookies[column][row] = cookie;
 						array.push(cookie);
 					}
-					
+					else{
+						this.cookies[column][row] = null;
+					}
+
 				}
 			}
 
 			return array;
 		}
 
-	   cookieAtColumn(column: number, row: number) {
+		private calculateCookieType(column: number, row: number): CookieType {
+			var cookieType: CookieType;
+
+			do {
+				cookieType = GameHelpers.getRandomNumber(Config.numCookieTypes);
+			}
+			while (this.whereIsAlreadyTwoCookies(column, row, cookieType))
+
+			return cookieType;
+		}
+
+		private whereIsAlreadyTwoCookies(column: number, row: number, cookieType: CookieType): boolean {
+
+			return (column >= 2 &&
+				this.cookies[column - 1][row] &&
+				this.cookies[column - 2][row] &&
+				this.cookies[column - 1][row].cookieType == cookieType &&
+				this.cookies[column - 2][row].cookieType == cookieType)
+				||
+				(row >= 2 &&
+					this.cookies[column][row - 1] &&
+					this.cookies[column][row - 2] &&
+					this.cookies[column][row - 1].cookieType == cookieType &&
+					this.cookies[column][row - 2].cookieType == cookieType)
+		}
+
+		cookieAtColumn(column: number, row: number) {
 			return this.cookies[column][row]
 		}
 
-	   private createCookieAtColumn(column: number, row: number, cookieType: CookieType): Cookie {
-			
-			var cookie = new Cookie(column, row, cookieType);
+		private createCookieAtColumn(column: number, row: number, cookieType: CookieType): Cookie {
 
-			this.cookies[column][row] = cookie;
+			var cookie = new Cookie(column, row, cookieType);
 
 			return cookie;
 		}
 
 		private createCookiesArray() {
-			this.cookies = new Array(this.numColumns-1);
+			this.cookies = new Array(this.numColumns - 1);
 			for (var i = 0; i < this.numColumns; i++) {
-				this.cookies[i] = new Array(this.numRows-1);
+				this.cookies[i] = new Array(this.numRows - 1);
 			}
 		}
-		
-	   private createTilesArray() {
-			this.tiles = new Array(this.numColumns-1);
+
+		private createTilesArray() {
+			this.tiles = new Array(this.numColumns - 1);
 			for (var i = 0; i < this.numColumns; i++) {
-				this.tiles[i] = new Array(this.numRows-1);
+				this.tiles[i] = new Array(this.numRows - 1);
 			}
 		}
-		
-	   tileAtColumn(column: number, row: number): Tile{
+
+		tileAtColumn(column: number, row: number): Tile {
 			return this.tiles[column][row]
 		}
-		
-		initWithLevel(level: IJsonLevel){
+
+		initWithLevel(level: IJsonLevel) {
 			this.createTilesArray();
-			
+
 			for (var row: number = 0; row < this.numRows; row++) {
 				for (var column: number = 0; column < this.numColumns; column++) {
-                var tile = level.tiles[column][row];
-					 
-					 if(tile == 1){
-						 this.tiles[column][row] = new Tile();
-					 }
-					 else{
-						 this.tiles[column][row] = null;
-					 }
+					var tile = level.tiles[column][row];
+
+					if (tile == 1) {
+						this.tiles[column][row] = new Tile();
+					}
+					else {
+						this.tiles[column][row] = null;
+					}
 				}
 			}
 		}
-		
-		performSwap(swap: Swap){
+
+		performSwap(swap: Swap) {
 			var columnA: number = swap.cookieA.column,
-				 rowA: number = swap.cookieA.row,
-				 columnB: number = swap.cookieB.column,
-				 rowB: number = swap.cookieB.row;
-				 
+				rowA: number = swap.cookieA.row,
+				columnB: number = swap.cookieB.column,
+				rowB: number = swap.cookieB.row;
+
 			this.cookies[columnA][rowA] = swap.cookieB;
 			swap.cookieB.column = columnA;
 			swap.cookieB.row = rowA;
-			
+
 			this.cookies[columnB][rowB] = swap.cookieA;
 			swap.cookieA.column = columnB;
 			swap.cookieA.row = rowB;
-			
+
 		}
-		
+
 	}
 }
