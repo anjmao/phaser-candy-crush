@@ -103,7 +103,11 @@ function watchPublic(params) {
 }
 
 function watchGame(params) {
-   gulp.watch(config.tsGameSrc, ['compile-game']).on('change', browserSync.reload);
+   gulp.watch(config.tsGameSrc, ['compile-game']).on('change', function(){
+      setTimeout(function(){
+         browserSync.reload()
+      }, 500)
+   });
 }
 
 function startServer(cb) {

@@ -1,4 +1,5 @@
 /// <reference path='../../../../typings/angularjs/angular.d.ts' />
+/// <reference path='../../../../typings/ramda/ramda.d.ts' />
 /// <reference path='../../libs/phaser/typescript/phaser.d.ts' />
 
 /// <reference path='module.ts' />

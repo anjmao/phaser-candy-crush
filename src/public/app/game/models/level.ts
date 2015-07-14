@@ -35,16 +35,22 @@ module GameApp.Models {
 			return set;
 		}
 		
-		isPossibleSwap(swap: Swap): boolean{
+		isPossibleSwap(other: Swap): boolean{
 			
-			this.possibleSwaps.forEach((possibleSwap) => {
-				var isPossible = (swap.cookieA == possibleSwap.cookieA && swap.cookieB == possibleSwap.cookieB) ||
-				                 (swap.cookieB == possibleSwap.cookieA && swap.cookieA == possibleSwap.cookieB);
+			for(var i = 0; i < this.possibleSwaps.length; i++){
+				var possibleSwap = this.possibleSwaps[i];
 				
+				var isPossible = (this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieB) ) ||
+                             (this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieB));
+									  
 				if(isPossible) return true;
-			})
+			}
 			
 			return false;
+		}
+		
+		private isTwoCookiesEquals(cookieA: Cookie, cookieB: Cookie){
+			return cookieA.column == cookieB.column && cookieA.row == cookieB.row && cookieA.cookieType == cookieB.cookieType;
 		}
 
 		private hasChainAtColumn(column: number, row: number): boolean {
@@ -239,7 +245,7 @@ module GameApp.Models {
 			this.cookies[columnB][rowB] = swap.cookieA;
 			swap.cookieA.column = columnB;
 			swap.cookieA.row = rowB;
-
+			
 		}
 
 	}

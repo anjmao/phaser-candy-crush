@@ -29,6 +29,7 @@ module GameApp.States {
          this.game.load.image('SugarCookie', assets+'SugarCookie@2x.png');
          
          this.game.load.image('Tile', assets+'Tile@2x.png');
+         this.game.load.image('TileEmpty', assets+'TileEmpty.png')
          
          this.game.load.json('level0','app/game/levels/Level_0.json');
          this.game.load.json('level1','app/game/levels/Level_1.json');
