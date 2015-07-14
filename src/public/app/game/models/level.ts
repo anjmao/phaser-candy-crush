@@ -135,7 +135,7 @@ module GameApp.Models {
 				}
 			}
 
-			this.possibleSwaps = possibleSwaps;
+			this.possibleSwaps = R.clone(possibleSwaps);
 		}
 
 		createInitialCookies(): Array<Cookie> {

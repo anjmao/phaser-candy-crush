@@ -41,7 +41,7 @@ module GameApp.States {
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level4');
+         this.initLevel('level1');
          this.beginGame();
 
       }
