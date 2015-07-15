@@ -9,7 +9,7 @@ var gulp = require('gulp'),
    inject = require('gulp-inject'),
    browserSync = require('browser-sync').create();
 
-var config = require('./config');
+var config = require('./gulp.config');
 var tsProject = ts.createProject({
     declarationFiles: false,
     noExternalResolve: false,
@@ -174,4 +174,29 @@ function customInject(params) {
 
       return target.pipe(inject(sources))
          .pipe(gulp.dest(config.destServer+'views/'));
+}
+
+function startTests(singleRun, done) {
+   var karma = require('karma').server;
+   var excludeFiles = [];
+   
+   karma.start({
+      config: __dirname + '/karma.config.js',
+      exclude: excludeFiles,
+      single: !!singleRun
+   }, karmaCompleted);
+   
+   function karmaCompleted(karmaResult) {
+      log('karma completed');
+      if(karmaResult === 1){
+         done('karma: tests failed with code '+ karmaResult);
+      }
+      else{
+         done();
+      }
+   }
+}
+
+function log(params) {
+   console.log(params);
 }
