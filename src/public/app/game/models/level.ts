@@ -269,7 +269,7 @@ module GameApp.Models {
 						var matchType = this.cookies[column][row].cookieType;
 
 						if (this.cookies[column + 1][row] && this.cookies[column + 1][row].cookieType == matchType &&
-							 this.cookies[column + 2][row] && this.cookies[column + 2][row].cookieType == matchType) {
+							this.cookies[column + 2][row] && this.cookies[column + 2][row].cookieType == matchType) {
 
 							var chain = new Chain();
 							chain.chainType = ChainType.chainTypeHorizontal;
@@ -301,7 +301,7 @@ module GameApp.Models {
 						var matchType = this.cookies[column][row].cookieType;
 
 						if (this.cookies[column][row + 1] && this.cookies[column][row + 1].cookieType == matchType &&
-							 this.cookies[column][row + 2] && this.cookies[column][row + 2].cookieType == matchType) {
+							this.cookies[column][row + 2] && this.cookies[column][row + 2].cookieType == matchType) {
 
 							var chain = new Chain();
 							chain.chainType = ChainType.chainTypeVertical;
@@ -336,7 +336,7 @@ module GameApp.Models {
 			// 1
 			for (var column = 0; column < this.numColumns; column++) {
 
-				var array;
+				var array: Cookie[];
 				for (var row = 0; row < this.numRows; row++) {
  
 					// 2
@@ -362,6 +362,43 @@ module GameApp.Models {
 								break;
 							}
 						}
+					}
+				}
+			}
+			return columns;
+		}
+
+		topUpCookies() {
+			var columns = [];
+
+			var cookieType = 0;
+
+			for (var column = 0; column < this.numColumns; column++) {
+
+				var array: Cookie[];
+ 
+				// 1
+				for (var row = this.numRows - 1; row >= 0 && this.cookies[column][row] == null; row--) {
+ 
+					// 2
+					if (this.tiles[column][row] != null) {
+ 
+						// 3
+						var newCookieType: CookieType;
+						do {
+							newCookieType = GameHelpers.getRandomNumber(6);
+						} while (newCookieType == cookieType);
+						cookieType = newCookieType;
+ 
+						// 4
+						var cookie = this.createCookieAtColumn(column, row, newCookieType);
+ 
+						// 5
+						if (array == null) {
+							array = [];
+							columns.push(array);
+						}
+						array.push(cookie);
 					}
 				}
 			}

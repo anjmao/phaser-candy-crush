@@ -30,10 +30,8 @@ module GameApp.States {
       swapSound: Phaser.Sound;
       invalidSwapSound: Phaser.Sound;
       matchSound: Phaser.Sound;
+      fallingCookieSound: Phaser.Sound;
       
-      // timer: Phaser.Timer;
-      // timerEvent: Phaser.TimerEvent;
-      // timerText: Phaser.Text;
       gameTimer: GameTimer;
 
 
@@ -59,13 +57,15 @@ module GameApp.States {
          this.swapSound = this.game.add.audio('swapSound');
          this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
          this.matchSound = this.game.add.audio('matchSound');
+         this.fallingCookieSound = this.game.add.audio('fallingCookieSound');
+         
 
          this.gameTimer = new GameTimer(this.game);
          this.gameTimer.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level4');
+         this.initLevel('level1');
          this.beginGame();
 
       }
@@ -97,7 +97,6 @@ module GameApp.States {
             createdCookie.inputEnabled = true;
             createdCookie.events.onInputDown.add(this.touchesBegan, this);
             createdCookie.events.onInputUp.add(this.touchesEnd, this);
-
             cookie.sprite = createdCookie;
          })
       }
@@ -207,11 +206,16 @@ module GameApp.States {
          //console.log('up from', selectedGem);
          //console.log('touchesEnd pointer', pointer.position);
          
-         this.handleMatches();
+         if(this.isPossibleSwap){
+            this.handleMatches();
+         }
+         
          
          this.userInteractionEnabled = true;
       }
-
+      
+      isPossibleSwap = false;
+      
       trySwapHorizontal(horzDelta: number, vertDelta: number) {
 
          this.userInteractionEnabled = false;
@@ -235,11 +239,13 @@ module GameApp.States {
             this.userInteractionEnabled = true;
             this.level.performSwap(swap);
             this.animateSwap(swap);
+            this.isPossibleSwap = true;
             console.log('Good swap');
          }
          else {
             this.userInteractionEnabled = true;
             this.animateInvalidSwap(swap);
+            this.isPossibleSwap = false;
             console.log('Bad swap');
 
          }
@@ -248,9 +254,21 @@ module GameApp.States {
 
       handleMatches() {
          var chains = this.level.removeMatches();
+         if(chains.length == 0){
+            this.beginNextTurn();
+            return;
+         }
+         
          this.animateMatchedCookies(chains);
          var columns = this.level.fillHoles();
          this.animateFallingCookies(columns);
+         
+         var newColumns = this.level.topUpCookies();
+         this.animateNewCookies(newColumns);
+      }
+      
+      private beginNextTurn(){
+         this.userInteractionEnabled = true;
       }
 
       animateSwap(swap: Swap) {
@@ -311,15 +329,14 @@ module GameApp.States {
          
          var longestDuration = 0;
          
-         columns.forEach((column) => {
+         columns.forEach((cookies: Cookie[]) => {
             var count = 0;
-            column.reverse();
-            column.forEach((cookie: Cookie) => {
+            cookies.forEach((cookie: Cookie) => {
                count++;
                
                var newPosition = this.pointForColum(cookie.column, cookie.row);
                
-               var delay = 0.05 + 0.15 * count*100; //TODO
+               var delay = 0.05 + 0.15 * count*500; //TODO
                
                var duration = ((cookie.sprite.position.y - newPosition.y) / this.tileHeight) * 100;
                
@@ -330,15 +347,37 @@ module GameApp.States {
                
                tweenBack.onComplete.add(() => {
                   console.log('animateFallingCookies complete', duration);
-                  
+                  this.fallingCookieSound.play();
                });
                
             });
          });
          
-        
-         
       }
+      
+      
+      animateNewCookies(columns: any[]){
+         columns.forEach((cookies: Cookie[]) => {
+            var count = 0;
+            
+            var startRow = cookies[0].row + 1;
+            
+            cookies.forEach((cookie: Cookie) => {
+               count++;
+               
+               var point = this.pointForColum(cookie.column, cookie.row);
+               var createdCookie = this.cookieLayer.create(point.x, point.y, cookie.spriteName());
+               createdCookie.inputEnabled = true;
+               createdCookie.events.onInputDown.add(this.touchesBegan, this);
+               createdCookie.events.onInputUp.add(this.touchesEnd, this);
+               cookie.sprite = createdCookie;
+               
+               
+               
+            });
+            
+         });
+      }  
 
    }
 }
