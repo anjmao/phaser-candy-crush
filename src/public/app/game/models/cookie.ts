@@ -20,6 +20,7 @@ module GameApp.Models {
 		row: number;
 	}
 	
+	
 	export enum CookieType{
 		croissant = 1,
 			cupcake = 2,
@@ -29,11 +30,11 @@ module GameApp.Models {
 			sugarCookie = 6
 	}
 
-	export class Cookie implements ICookie {
+	export class Cookie {
 		column: number;
 		row: number;
 		cookieType: number;
-		sprite: Phaser.Sprite;
+		sprite: any;
 		
 		constructor(column: number,row: number,cookieType: number){
 			this.column = column;

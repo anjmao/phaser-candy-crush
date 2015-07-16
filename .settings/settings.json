@@ -4,7 +4,8 @@
 	"files.exclude": {
 		"**/.git": true,
 		"**/.DS_Store": true,
-		"src/**/*.js": true
+		"src/**/*.js": true,
+		"src/public/libs/**/.js": false
 	},
 	"search.exclude": {
 		"**/node_modules": true,
