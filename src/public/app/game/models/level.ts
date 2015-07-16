@@ -250,27 +250,27 @@ module GameApp.Models {
 		}
 
 		removeMatches(): Chain[] {
-			var horizontalChains  = this.detectHorizontalMatches();
+			var horizontalChains = this.detectHorizontalMatches();
 			var verticalChains = this.detectVerticalMatches();
-			
+
 			this.removeCookies(horizontalChains);
 			this.removeCookies(verticalChains);
-			
+
 			return horizontalChains.concat(verticalChains);
 		}
 
 		private detectHorizontalMatches(): Chain[] {
-			
+
 			var set: Chain[] = [];
- 
+
 			for (var row = 0; row < this.numRows; row++) {
 				for (var column = 0; column < this.numColumns - 2;) {
 					if (this.cookies[column][row] != null) {
 						var matchType = this.cookies[column][row].cookieType;
- 
-						if (this.cookies[column + 1][row].cookieType == matchType &&
-							this.cookies[column + 2][row].cookieType == matchType) {
-							
+
+						if (this.cookies[column + 1][row] && this.cookies[column + 1][row].cookieType == matchType &&
+							 this.cookies[column + 2][row] && this.cookies[column + 2][row].cookieType == matchType) {
+
 							var chain = new Chain();
 							chain.chainType = ChainType.chainTypeHorizontal;
 
@@ -278,14 +278,14 @@ module GameApp.Models {
 								chain.addCookie(this.cookies[column][row]);
 								column += 1;
 							}
-							while (column < this.numColumns && this.cookies[column][row].cookieType == matchType);
+							while (column < this.numColumns && this.cookies[column][row] && this.cookies[column][row].cookieType == matchType);
 
 							set.push(chain);
 
 							continue;
 						}
 					}
- 
+
 					column += 1;
 				}
 			}
@@ -300,17 +300,17 @@ module GameApp.Models {
 					if (this.cookies[column][row] != null) {
 						var matchType = this.cookies[column][row].cookieType;
 
-						if (this.cookies[column][row + 1].cookieType == matchType &&
-							this.cookies[column][row + 2].cookieType == matchType) {
+						if (this.cookies[column][row + 1] && this.cookies[column][row + 1].cookieType == matchType &&
+							 this.cookies[column][row + 2] && this.cookies[column][row + 2].cookieType == matchType) {
 
 							var chain = new Chain();
 							chain.chainType = ChainType.chainTypeVertical;
-							
+
 							do {
 								chain.addCookie(this.cookies[column][row]);
 								row += 1;
 							}
-							while (row < this.numRows && this.cookies[column][row].cookieType == matchType);
+							while (row < this.numRows && this.cookies[column][row] && this.cookies[column][row].cookieType == matchType);
 
 							set.push(chain);
 							continue;
@@ -321,13 +321,51 @@ module GameApp.Models {
 			}
 			return set;
 		}
-		
-		private removeCookies(chains: Chain[]){
+
+		private removeCookies(chains: Chain[]) {
 			chains.forEach((chain) => {
 				chain.cookies.forEach((cookie) => {
 					this.cookies[cookie.column][cookie.row] = null;
-				})		
+				})
 			});
+		}
+
+		fillHoles(): any[] {
+			var columns = [];
+ 
+			// 1
+			for (var column = 0; column < this.numColumns; column++) {
+
+				var array;
+				for (var row = 0; row < this.numRows; row++) {
+ 
+					// 2
+					if (this.tiles[column][row] != null && this.cookies[column][row] == null) {
+ 
+						// 3
+						for (var lookup = row + 1; lookup < this.numRows; lookup++) {
+							var cookie = this.cookies[column][lookup];
+							if (cookie != null) {
+								// 4
+								this.cookies[column][lookup] = null;
+								this.cookies[column][row] = cookie;
+								cookie.row = row;
+ 
+								// 5
+								if (array == null) {
+									array = [];
+									columns.push(array);
+								}
+								array.push(cookie);
+ 
+								// 6
+								break;
+							}
+						}
+					}
+				}
+			}
+			return columns;
 		}
 
 	}

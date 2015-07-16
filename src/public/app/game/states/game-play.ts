@@ -65,7 +65,7 @@ module GameApp.States {
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level0');
+         this.initLevel('level4');
          this.beginGame();
 
       }
@@ -133,8 +133,8 @@ module GameApp.States {
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
                else {
-                  //var point = this.pointForColum(column, row);
-                  //this.tilesLayer.create(point.x, point.y, 'TileEmpty');
+                  var point = this.pointForColum(column, row);
+                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
@@ -249,6 +249,8 @@ module GameApp.States {
       handleMatches() {
          var chains = this.level.removeMatches();
          this.animateMatchedCookies(chains);
+         var columns = this.level.fillHoles();
+         this.animateFallingCookies(columns);
       }
 
       animateSwap(swap: Swap) {
@@ -303,7 +305,39 @@ module GameApp.States {
             });
          });
 
-
+      }
+      
+      animateFallingCookies(columns: any[]){
+         
+         var longestDuration = 0;
+         
+         columns.forEach((column) => {
+            var count = 0;
+            column.reverse();
+            column.forEach((cookie: Cookie) => {
+               count++;
+               
+               var newPosition = this.pointForColum(cookie.column, cookie.row);
+               
+               var delay = 0.05 + 0.15 * count*100; //TODO
+               
+               var duration = ((cookie.sprite.position.y - newPosition.y) / this.tileHeight) * 100;
+               
+               longestDuration = Math.max(longestDuration, duration + delay);
+               
+               //var tweenBack = this.game.add.tween(cookie.sprite).to({ x: newPosition.x, y: newPosition.y }, duration, Phaser.Easing.Linear.None, true);
+                var tweenBack = this.game.add.tween(cookie.sprite).to({ x: newPosition.x, y: newPosition.y }, duration, Phaser.Easing.Linear.None, true, delay);
+               
+               tweenBack.onComplete.add(() => {
+                  console.log('animateFallingCookies complete', duration);
+                  
+               });
+               
+            });
+         });
+         
+        
+         
       }
 
    }
