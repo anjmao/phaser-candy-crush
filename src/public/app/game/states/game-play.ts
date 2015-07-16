@@ -24,6 +24,9 @@ module GameApp.States {
       swipeFromRow: number;
 
       userInteractionEnabled: boolean;
+      
+      swapSound: Phaser.Sound;
+      invalidSwapSound: Phaser.Sound;
 
 
 
@@ -41,10 +44,13 @@ module GameApp.States {
          
          var text = this.game.add.text(64, 20, "Level 1", {
              font: "20px Arial",
-             fill: "green",
+             fill: "yellow",
              align: "center"
          });
          text.anchor.set(0.5, 0.5);
+         
+         this.swapSound = this.game.add.audio('swapSound');
+         this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
@@ -232,6 +238,8 @@ module GameApp.States {
 
          tween.onComplete.add(() => {
             console.log('tween complete');
+            
+            this.swapSound.play();
 
             this.userInteractionEnabled = true;
          }, this);
@@ -248,6 +256,9 @@ module GameApp.States {
           tween2.onComplete.add(() => {
              var tweenBack = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
              var tweenBack2 = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+             
+             this.invalidSwapSound.play();
+             
          }, this);
           
          
