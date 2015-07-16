@@ -24,6 +24,13 @@ module GameApp.States {
       swipeFromRow: number;
 
       userInteractionEnabled: boolean;
+      
+      swapSound: Phaser.Sound;
+      invalidSwapSound: Phaser.Sound;
+      
+      timer: Phaser.Timer;
+      timerEvent: Phaser.TimerEvent;
+      timerText: Phaser.Text;
 
 
 
@@ -41,16 +48,58 @@ module GameApp.States {
          
          var text = this.game.add.text(64, 20, "Level 1", {
              font: "20px Arial",
-             fill: "green",
+             fill: "yellow",
              align: "center"
          });
          text.anchor.set(0.5, 0.5);
+         
+         this.swapSound = this.game.add.audio('swapSound');
+         this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
+         
+         this.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
          this.initLevel('level0');
          this.beginGame();
 
+      }
+      
+      render() {
+         this.renderTimer();
+      }
+      
+      private renderTimer() {
+         if(this.timer.running){
+            this.timerText.text = this.formatTime(Math.round((this.timerEvent.delay - this.timer.ms) / 1000))
+         }
+         else{
+            this.timerText.text = "Done";
+         }
+      }
+      
+      private createTimer() {
+         
+         this.timerText = this.game.add.text(140, 20, "02:00", {
+             font: "20px Arial",
+             fill: "red",
+             align: "center"
+         });
+         this.timerText.anchor.set(0.5, 0.5);
+         
+         this.timer = this.game.time.create();
+         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 2 + Phaser.Timer.SECOND, this.endTimer, this);
+         this.timer.start();
+      }
+      
+      private endTimer(){
+         this.timer.stop();
+      }
+      
+      private formatTime(s: number){
+         var minutes: any = "0" + Math.floor(s / 60);
+         var seconds = "0" + (s - minutes * 60);
+         return minutes.substr(-2) + ":" + seconds.substr(-2); 
       }
 
       beginGame() {
@@ -232,6 +281,8 @@ module GameApp.States {
 
          tween.onComplete.add(() => {
             console.log('tween complete');
+            
+            this.swapSound.play();
 
             this.userInteractionEnabled = true;
          }, this);
@@ -248,6 +299,9 @@ module GameApp.States {
           tween2.onComplete.add(() => {
              var tweenBack = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
              var tweenBack2 = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+             
+             this.invalidSwapSound.play();
+             
          }, this);
           
          
