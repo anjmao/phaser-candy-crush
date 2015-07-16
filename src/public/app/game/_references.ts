@@ -5,7 +5,7 @@
 /// <reference path='module.ts' />
 /// <reference path='index-controller.ts' />
 
-
+/// <reference path='models/chain.ts' />
 /// <reference path='models/tile.ts' />
 /// <reference path='models/cookie.ts' />
 /// <reference path='models/level.ts' />
@@ -22,3 +22,4 @@
 
 
 /// <reference path='game-helpers.ts' />
+/// <reference path='game-timer.ts' />

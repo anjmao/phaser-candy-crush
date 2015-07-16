@@ -1,5 +1,6 @@
 /// <reference path='../_references.ts' />
 
+
 module GameApp.Models {
 	'use strict';
 
@@ -29,42 +30,42 @@ module GameApp.Models {
 				this.detectPossibleSwaps();
 			}
 			while (this.possibleSwaps.length == 0)
-			
+
          console.log(this.possibleSwaps);
-			
+
 			return set;
 		}
-		
-		isPossibleSwap(other: Swap): boolean{
-			
-			for(var i = 0; i < this.possibleSwaps.length; i++){
+
+		isPossibleSwap(other: Swap): boolean {
+
+			for (var i = 0; i < this.possibleSwaps.length; i++) {
 				var possibleSwap = this.possibleSwaps[i];
-				
-				var isPossible = (this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieB) ) ||
-                             (this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieB));
-									  
-				if(isPossible) return true;
+
+				var isPossible = (this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieB)) ||
+					(this.isTwoCookiesEquals(other.cookieB, possibleSwap.cookieA) && this.isTwoCookiesEquals(other.cookieA, possibleSwap.cookieB));
+
+				if (isPossible) return true;
 			}
-			
+
 			return false;
 		}
-		
-		private isTwoCookiesEquals(cookieA: Cookie, cookieB: Cookie){
+
+		private isTwoCookiesEquals(cookieA: Cookie, cookieB: Cookie) {
 			return cookieA.column == cookieB.column && cookieA.row == cookieB.row && cookieA.cookieType == cookieB.cookieType;
 		}
 
 		private hasChainAtColumn(column: number, row: number): boolean {
-			
+
 			var cookie = this.cookies[column][row],
-			    cookieType: CookieType;
-				 
-			if(cookie) {
+				cookieType: CookieType;
+
+			if (cookie) {
 				cookieType = cookie.cookieType;
 			}
-			else{
+			else {
 				cookieType = 0;
 			}
-			
+
 			var horzLength = 1;
 			for (var i = column - 1; i >= 0 && this.cookies[i][row] && this.cookies[i][row].cookieType == cookieType; i-- , horzLength++);
 			for (var i = column + 1; i < this.numColumns && this.cookies[i][row] && this.cookies[i][row].cookieType == cookieType; i++ , horzLength++);
@@ -96,7 +97,7 @@ module GameApp.Models {
  
 								// Is either cookie now part of a chain?
 								if (this.hasChainAtColumn(column + 1, row) ||
-									 this.hasChainAtColumn(column, row)) {
+									this.hasChainAtColumn(column, row)) {
 
 									var swap = new Swap();
 									swap.cookieA = cookie;
@@ -119,7 +120,7 @@ module GameApp.Models {
 								this.cookies[column][row + 1] = cookie;
 
 								if (this.hasChainAtColumn(column, row + 1) ||
-									 this.hasChainAtColumn(column, row)) {
+									this.hasChainAtColumn(column, row)) {
 
 									var swap = new Swap();
 									swap.cookieA = cookie;
@@ -146,11 +147,11 @@ module GameApp.Models {
 					if (this.tiles[column][row] != null) {
 						var cookieType: CookieType = this.calculateCookieType(column, row);
 						var cookie: Cookie = this.createCookieAtColumn(column, row, cookieType);
-						
-			         this.cookies[column][row] = cookie;
+
+						this.cookies[column][row] = cookie;
 						array.push(cookie);
 					}
-					else{
+					else {
 						this.cookies[column][row] = null;
 					}
 
@@ -245,7 +246,88 @@ module GameApp.Models {
 			this.cookies[columnB][rowB] = swap.cookieA;
 			swap.cookieA.column = columnB;
 			swap.cookieA.row = rowB;
+
+		}
+
+		removeMatches(): Chain[] {
+			var horizontalChains  = this.detectHorizontalMatches();
+			var verticalChains = this.detectVerticalMatches();
 			
+			this.removeCookies(horizontalChains);
+			this.removeCookies(verticalChains);
+			
+			return horizontalChains.concat(verticalChains);
+		}
+
+		private detectHorizontalMatches(): Chain[] {
+			
+			var set: Chain[] = [];
+ 
+			for (var row = 0; row < this.numRows; row++) {
+				for (var column = 0; column < this.numColumns - 2;) {
+					if (this.cookies[column][row] != null) {
+						var matchType = this.cookies[column][row].cookieType;
+ 
+						if (this.cookies[column + 1][row].cookieType == matchType &&
+							this.cookies[column + 2][row].cookieType == matchType) {
+							
+							var chain = new Chain();
+							chain.chainType = ChainType.chainTypeHorizontal;
+
+							do {
+								chain.addCookie(this.cookies[column][row]);
+								column += 1;
+							}
+							while (column < this.numColumns && this.cookies[column][row].cookieType == matchType);
+
+							set.push(chain);
+
+							continue;
+						}
+					}
+ 
+					column += 1;
+				}
+			}
+			return set;
+		}
+
+		private detectVerticalMatches(): Chain[] {
+			var set: Chain[] = [];
+
+			for (var column = 0; column < this.numColumns; column++) {
+				for (var row = 0; row < this.numRows - 2;) {
+					if (this.cookies[column][row] != null) {
+						var matchType = this.cookies[column][row].cookieType;
+
+						if (this.cookies[column][row + 1].cookieType == matchType &&
+							this.cookies[column][row + 2].cookieType == matchType) {
+
+							var chain = new Chain();
+							chain.chainType = ChainType.chainTypeVertical;
+							
+							do {
+								chain.addCookie(this.cookies[column][row]);
+								row += 1;
+							}
+							while (row < this.numRows && this.cookies[column][row].cookieType == matchType);
+
+							set.push(chain);
+							continue;
+						}
+					}
+					row += 1;
+				}
+			}
+			return set;
+		}
+		
+		private removeCookies(chains: Chain[]){
+			chains.forEach((chain) => {
+				chain.cookies.forEach((cookie) => {
+					this.cookies[cookie.column][cookie.row] = null;
+				})		
+			});
 		}
 
 	}

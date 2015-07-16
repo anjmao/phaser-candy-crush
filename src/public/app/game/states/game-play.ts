@@ -1,11 +1,13 @@
 /// <reference path='../_references.ts' />
 
 import GameObjects = GameApp.Models;
-import Level = GameApp.Models.Level;
+
+import Level = GameObjects.Level;
 import Swap = GameObjects.Swap;
-import IJsonLevel = GameApp.Models.IJsonLevel;
+import IJsonLevel = GameObjects.IJsonLevel;
 import Cookie = GameObjects.Cookie;
-import GameConfig = GameApp.Models.Config;
+import Chain = GameObjects.Chain;
+import GameConfig = GameObjects.Config;
 
 module GameApp.States {
    'use strict';
@@ -24,14 +26,15 @@ module GameApp.States {
       swipeFromRow: number;
 
       userInteractionEnabled: boolean;
-      
+
       swapSound: Phaser.Sound;
       invalidSwapSound: Phaser.Sound;
+      matchSound: Phaser.Sound;
       
-      timer: Phaser.Timer;
-      timerEvent: Phaser.TimerEvent;
-      timerText: Phaser.Text;
-
+      // timer: Phaser.Timer;
+      // timerEvent: Phaser.TimerEvent;
+      // timerText: Phaser.Text;
+      gameTimer: GameTimer;
 
 
       private initLevel(levelName: string) {
@@ -45,18 +48,20 @@ module GameApp.States {
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
-         
+
          var text = this.game.add.text(64, 20, "Level 1", {
-             font: "20px Arial",
-             fill: "yellow",
-             align: "center"
+            font: "20px Arial",
+            fill: "yellow",
+            align: "center"
          });
          text.anchor.set(0.5, 0.5);
-         
+
          this.swapSound = this.game.add.audio('swapSound');
          this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
-         
-         this.createTimer();
+         this.matchSound = this.game.add.audio('matchSound');
+
+         this.gameTimer = new GameTimer(this.game);
+         this.gameTimer.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
@@ -64,43 +69,11 @@ module GameApp.States {
          this.beginGame();
 
       }
-      
+
       render() {
-         this.renderTimer();
+         this.gameTimer.renderTimer();
       }
-      
-      private renderTimer() {
-         if(this.timer.running){
-            this.timerText.text = this.formatTime(Math.round((this.timerEvent.delay - this.timer.ms) / 1000))
-         }
-         else{
-            this.timerText.text = "Done";
-         }
-      }
-      
-      private createTimer() {
-         
-         this.timerText = this.game.add.text(140, 20, "02:00", {
-             font: "20px Arial",
-             fill: "red",
-             align: "center"
-         });
-         this.timerText.anchor.set(0.5, 0.5);
-         
-         this.timer = this.game.time.create();
-         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 2 + Phaser.Timer.SECOND, this.endTimer, this);
-         this.timer.start();
-      }
-      
-      private endTimer(){
-         this.timer.stop();
-      }
-      
-      private formatTime(s: number){
-         var minutes: any = "0" + Math.floor(s / 60);
-         var seconds = "0" + (s - minutes * 60);
-         return minutes.substr(-2) + ":" + seconds.substr(-2); 
-      }
+
 
       beginGame() {
          this.userInteractionEnabled = true;
@@ -159,7 +132,7 @@ module GameApp.States {
                   var point = this.pointForColum(column, row);
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
-               else{
+               else {
                   //var point = this.pointForColum(column, row);
                   //this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
@@ -168,9 +141,9 @@ module GameApp.States {
       }
 
       touchesMoved(pointer: Phaser.Pointer, x, y, fromClick) {
-         
+
          if (this.swipeFromColumn == null) return;
-         
+
          if (pointer.isDown) {
 
             var cookiePosition: GameObjects.ICookiePosition = {
@@ -179,8 +152,8 @@ module GameApp.States {
             }
             //TODO: need to configure this sizes
             var pointX = x - 32,
-                pointY = y - 32;
-                
+               pointY = y - 32;
+
             if (this.convertPoint(new Phaser.Point(pointX, pointY), cookiePosition)) {
 
                var horzDelta: number = 0,
@@ -218,7 +191,7 @@ module GameApp.States {
                this.swipeFromColumn = cookiePosition.column;
                this.swipeFromRow = cookiePosition.row;
             }
-            
+
             console.log('selectedCookie', 'column: ' + cookiePosition.column + ' row: ' + cookiePosition.row);
          }
 
@@ -233,6 +206,8 @@ module GameApp.States {
          //console.log('releaseCookie', selectedCookie);
          //console.log('up from', selectedGem);
          //console.log('touchesEnd pointer', pointer.position);
+         
+         this.handleMatches();
          
          this.userInteractionEnabled = true;
       }
@@ -271,6 +246,11 @@ module GameApp.States {
 
       }
 
+      handleMatches() {
+         var chains = this.level.removeMatches();
+         this.animateMatchedCookies(chains);
+      }
+
       animateSwap(swap: Swap) {
 
          var cookieSrpiteA = swap.cookieA.sprite,
@@ -281,31 +261,50 @@ module GameApp.States {
 
          tween.onComplete.add(() => {
             console.log('tween complete');
-            
+
             this.swapSound.play();
 
             this.userInteractionEnabled = true;
          }, this);
 
       }
-      
-      animateInvalidSwap(swap: Swap){
-          var cookieSrpiteA = swap.cookieA.sprite,
-              cookieSrpiteB = swap.cookieB.sprite;  
-              
-          var tween = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
-          var tween2 = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
-          
-          tween2.onComplete.add(() => {
-             var tweenBack = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
-             var tweenBack2 = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
-             
-             this.invalidSwapSound.play();
-             
+
+      animateInvalidSwap(swap: Swap) {
+         var cookieSrpiteA = swap.cookieA.sprite,
+            cookieSrpiteB = swap.cookieB.sprite;
+
+         var tween = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+         var tween2 = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
+
+         tween2.onComplete.add(() => {
+            var tweenBack = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
+            var tweenBack2 = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+
+            this.invalidSwapSound.play();
+
          }, this);
-          
-         
       }
-      
+
+      animateMatchedCookies(chains: Chain[]) {
+
+         chains.forEach((chain) => {
+            chain.cookies.forEach((cookie) => {
+               // 1
+               if (cookie.sprite != null) {
+ 
+                  // 2
+                  cookie.sprite.kill();
+                  this.matchSound.play();
+                  
+ 
+                  // 3
+                  cookie.sprite = null;
+               }
+            });
+         });
+
+
+      }
+
    }
 }
