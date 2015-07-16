@@ -34,3 +34,4 @@ src/**/*.js
 deploy/*
 sqllite
 src/public/**/*.js.map
+src/public/app/**/*.map

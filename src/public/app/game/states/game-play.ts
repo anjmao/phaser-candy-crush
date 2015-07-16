@@ -27,6 +27,10 @@ module GameApp.States {
       
       swapSound: Phaser.Sound;
       invalidSwapSound: Phaser.Sound;
+      
+      timer: Phaser.Timer;
+      timerEvent: Phaser.TimerEvent;
+      timerText: Phaser.Text;
 
 
 
@@ -51,12 +55,51 @@ module GameApp.States {
          
          this.swapSound = this.game.add.audio('swapSound');
          this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
+         
+         this.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
          this.initLevel('level0');
          this.beginGame();
 
+      }
+      
+      render() {
+         this.renderTimer();
+      }
+      
+      private renderTimer() {
+         if(this.timer.running){
+            this.timerText.text = this.formatTime(Math.round((this.timerEvent.delay - this.timer.ms) / 1000))
+         }
+         else{
+            this.timerText.text = "Done";
+         }
+      }
+      
+      private createTimer() {
+         
+         this.timerText = this.game.add.text(140, 20, "02:00", {
+             font: "20px Arial",
+             fill: "red",
+             align: "center"
+         });
+         this.timerText.anchor.set(0.5, 0.5);
+         
+         this.timer = this.game.time.create();
+         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 2 + Phaser.Timer.SECOND, this.endTimer, this);
+         this.timer.start();
+      }
+      
+      private endTimer(){
+         this.timer.stop();
+      }
+      
+      private formatTime(s: number){
+         var minutes: any = "0" + Math.floor(s / 60);
+         var seconds = "0" + (s - minutes * 60);
+         return minutes.substr(-2) + ":" + seconds.substr(-2); 
       }
 
       beginGame() {
