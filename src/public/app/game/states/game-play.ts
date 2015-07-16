@@ -38,10 +38,17 @@ module GameApp.States {
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
+         
+         var text = this.game.add.text(64, 20, "Level 1", {
+             font: "20px Arial",
+             fill: "green",
+             align: "center"
+         });
+         text.anchor.set(0.5, 0.5);
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level1');
+         this.initLevel('level0');
          this.beginGame();
 
       }
@@ -104,14 +111,15 @@ module GameApp.States {
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
                else{
-                  var point = this.pointForColum(column, row);
-                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
+                  //var point = this.pointForColum(column, row);
+                  //this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
       }
 
       touchesMoved(pointer: Phaser.Pointer, x, y, fromClick) {
+         
          if (this.swipeFromColumn == null) return;
          
          if (pointer.isDown) {
@@ -120,8 +128,11 @@ module GameApp.States {
                column: null,
                row: null
             }
-
-            if (this.convertPoint(new Phaser.Point(x, y), cookiePosition)) {
+            //TODO: need to configure this sizes
+            var pointX = x - 32,
+                pointY = y - 32;
+                
+            if (this.convertPoint(new Phaser.Point(pointX, pointY), cookiePosition)) {
 
                var horzDelta: number = 0,
                   vertDelta: number = 0;
@@ -204,6 +215,7 @@ module GameApp.States {
          }
          else {
             this.userInteractionEnabled = true;
+            this.animateInvalidSwap(swap);
             console.log('Bad swap');
 
          }
@@ -225,8 +237,21 @@ module GameApp.States {
          }, this);
 
       }
-
-
-
+      
+      animateInvalidSwap(swap: Swap){
+          var cookieSrpiteA = swap.cookieA.sprite,
+              cookieSrpiteB = swap.cookieB.sprite;  
+              
+          var tween = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+          var tween2 = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
+          
+          tween2.onComplete.add(() => {
+             var tweenBack = this.game.add.tween(swap.cookieB.sprite).to({ x: cookieSrpiteA.position.x, y: cookieSrpiteA.position.y }, 100, Phaser.Easing.Linear.None, true);
+             var tweenBack2 = this.game.add.tween(swap.cookieA.sprite).to({ x: cookieSrpiteB.position.x, y: cookieSrpiteB.position.y }, 100, Phaser.Easing.Linear.None, true);
+         }, this);
+          
+         
+      }
+      
    }
 }

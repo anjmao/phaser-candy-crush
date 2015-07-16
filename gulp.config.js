@@ -29,7 +29,24 @@ var config = {
 	mainFile : destServer + 'app.js',
 	destServer : destServer,
 	destPublic : srcPublic,
-	srcServer : srcServer
+	srcServer : srcServer,
+	
+	bowerFiles: srcPublic + 'libs',
+	
+	specHelpers: 'TODO'
+	
 };
+
+config.karma = getKarmaOptions();
+
+function getKarmaOptions() {
+	var options = {
+		files: [].concat(
+			config.specHelpers,
+			srcPublic + ''
+		)
+	};
+	return options;
+}
 
 module.exports = config;

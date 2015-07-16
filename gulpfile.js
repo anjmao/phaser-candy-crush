@@ -1,13 +1,11 @@
 var gulp = require('gulp'),
-   nodemon = require('gulp-nodemon'),
    ts = require('gulp-typescript'),
    sourcemaps = require('gulp-sourcemaps'),
    clean = require('gulp-clean'),
    changed = require('gulp-changed'),
    concat = require('gulp-concat'),
    wiredep = require('wiredep').stream,
-   inject = require('gulp-inject'),
-   browserSync = require('browser-sync').create();
+   inject = require('gulp-inject');
 
 var config = require('./gulp.config');
 var tsProject = ts.createProject({
@@ -54,8 +52,9 @@ gulp.task('bower-inject', bowerInject);
 gulp.task('custom-inject', customInject);
 
 
-
+var browserSync = null;
 function browserSyncTask(params){
+   browserSync = require('browser-sync').create();
    browserSync.init(null, {
 		proxy: "http://localhost:5000",
         files: ["public/**/*.*"],
@@ -113,6 +112,7 @@ function watchGame(params) {
 function startServer(cb) {
    
    var started = false;
+   var nodemon = require('gulp-nodemon');
    
    return nodemon({
       script: config.mainFile,
@@ -170,7 +170,7 @@ function bowerInject() {
 function customInject(params) {
    var target = gulp.src(config.srcServer+'views/layout.vash');
       // It's not necessary to read the files (will speed up things), we're only after their paths: 
-      var sources = gulp.src(config.publicJsInject).pipe(angularFilesort());
+      var sources = gulp.src(config.publicJsInject);
 
       return target.pipe(inject(sources))
          .pipe(gulp.dest(config.destServer+'views/'));

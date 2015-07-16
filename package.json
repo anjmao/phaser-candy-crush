@@ -22,7 +22,6 @@
   "homepage": "https://github.com/Anjmao/candy-crust#readme",
   "devDependencies": {
     "browser-sync": "^2.7.13",
-    "gulp": "^3.9.0",
     "gulp-nodemon": "^2.0.3"
   },
   "dependencies": {
