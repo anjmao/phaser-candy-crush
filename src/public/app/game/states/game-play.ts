@@ -132,8 +132,8 @@ module GameApp.States {
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
                else {
-                  var point = this.pointForColum(column, row);
-                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
+                  //var point = this.pointForColum(column, row);
+                  //this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
