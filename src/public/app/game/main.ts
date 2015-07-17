@@ -4,6 +4,7 @@ import Boot = GameApp.States.Boot;
 import Preloader = GameApp.States.Preloader;
 import GamePlay = GameApp.States.GamePlay;
 import GameEnd = GameApp.States.GamePlay;
+import Menu = GameApp.States.Menu;
 
 class CandyGame {
    constructor(scope, injector) {
@@ -18,6 +19,7 @@ class CandyGame {
    create() {
       this.game.state.add("Boot", Boot);
       this.game.state.add("Preloader", Preloader);
+      this.game.state.add("Menu", Menu);
       this.game.state.add("GamePlay", GamePlay);
       this.game.state.add("GameEnd", GameEnd);
       

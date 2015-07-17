@@ -4,8 +4,8 @@ module GameApp.Models {
 	'use strict'; 
 	
    export class Config{
-		static numColumns: number = 9;
-		static numRows: number = 9;
+		static numColumns: number = 4;
+		static numRows: number = 4;
 		static numCookieTypes = 6;
 	}
 }
