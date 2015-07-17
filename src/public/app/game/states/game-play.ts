@@ -24,19 +24,25 @@ module GameApp.States {
 
       swipeFromColumn: number;
       swipeFromRow: number;
-
+      
+      isPossibleSwap:boolean = false;
       userInteractionEnabled: boolean;
 
       swapSound: Phaser.Sound;
       invalidSwapSound: Phaser.Sound;
       matchSound: Phaser.Sound;
       fallingCookieSound: Phaser.Sound;
+      addCookieSound: Phaser.Sound;
       
       gameTimer: GameTimer;
 
 
       private initLevel(levelName: string) {
          var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
+         if(levelData == null)
+         {
+            throw 'Cannot load level data';
+         }
          this.level = new Level();
          this.level.initWithLevel(levelData);
          this.addTiles();
@@ -58,6 +64,8 @@ module GameApp.States {
          this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
          this.matchSound = this.game.add.audio('matchSound');
          this.fallingCookieSound = this.game.add.audio('fallingCookieSound');
+         this.addCookieSound = this.game.add.audio('addCookieSound');
+         
          
 
          this.gameTimer = new GameTimer(this.game);
@@ -65,7 +73,7 @@ module GameApp.States {
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level1');
+         this.initLevel('level5');
          this.beginGame();
 
       }
@@ -132,15 +140,37 @@ module GameApp.States {
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
                else {
-                  //var point = this.pointForColum(column, row);
-                  //this.tilesLayer.create(point.x, point.y, 'TileEmpty');
+                  var point = this.pointForColum(column, row);
+                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
       }
-
+      
+      debugMove(x, y){
+         var cookiePosition: GameObjects.ICookiePosition = {
+               column: null,
+               row: null
+         }
+         var convert = this.convertPoint(new Phaser.Point(x-32, y-32), cookiePosition);
+         
+         if(convert){
+            var cookie = this.level.cookieAtColumn(cookiePosition.column, cookiePosition.row);
+            if(cookie){
+               console.log('actual cookie', {
+               column: cookie.column,
+               row: cookie.row
+            })
+            }
+            
+         }
+        
+         console.log('cookie point', cookiePosition);
+      }
       touchesMoved(pointer: Phaser.Pointer, x, y, fromClick) {
-
+         
+         this.debugMove(x, y);
+         
          if (this.swipeFromColumn == null) return;
 
          if (pointer.isDown) {
@@ -214,8 +244,6 @@ module GameApp.States {
          this.userInteractionEnabled = true;
       }
       
-      isPossibleSwap = false;
-      
       trySwapHorizontal(horzDelta: number, vertDelta: number) {
 
          this.userInteractionEnabled = false;
@@ -264,7 +292,11 @@ module GameApp.States {
          this.animateFallingCookies(columns);
          
          var newColumns = this.level.topUpCookies();
-         this.animateNewCookies(newColumns);
+         
+         this.animateNewCookies(newColumns, () => {
+            this.handleMatches();
+         });
+
       }
       
       private beginNextTurn(){
@@ -336,16 +368,15 @@ module GameApp.States {
                
                var newPosition = this.pointForColum(cookie.column, cookie.row);
                
-               var delay = 0.05 + 0.15 * count*500; //TODO
+               var delay = 0.05 + 0.15 * count*500;
                
                var duration = ((cookie.sprite.position.y - newPosition.y) / this.tileHeight) * 100;
                
                longestDuration = Math.max(longestDuration, duration + delay);
                
-               //var tweenBack = this.game.add.tween(cookie.sprite).to({ x: newPosition.x, y: newPosition.y }, duration, Phaser.Easing.Linear.None, true);
-                var tweenBack = this.game.add.tween(cookie.sprite).to({ x: newPosition.x, y: newPosition.y }, duration, Phaser.Easing.Linear.None, true, delay);
+               var tween = this.game.add.tween(cookie.sprite).to({ x: newPosition.x, y: newPosition.y }, duration, Phaser.Easing.Linear.None, true, delay);
                
-               tweenBack.onComplete.add(() => {
+               tween.onComplete.add(() => {
                   console.log('animateFallingCookies complete', duration);
                   this.fallingCookieSound.play();
                });
@@ -356,27 +387,42 @@ module GameApp.States {
       }
       
       
-      animateNewCookies(columns: any[]){
+      animateNewCookies(columns: any[], onComplete){
+         
+         var longestDuration = 0;
+         var tweens: Phaser.Tween[] = [];
+         
          columns.forEach((cookies: Cookie[]) => {
-            var count = 0;
+            var idx = 0;
             
             var startRow = cookies[0].row + 1;
+            var cookiesCount = cookies.length;
             
             cookies.forEach((cookie: Cookie) => {
-               count++;
+               idx++;
                
-               var point = this.pointForColum(cookie.column, cookie.row);
-               var createdCookie = this.cookieLayer.create(point.x, point.y, cookie.spriteName());
+               var point = this.pointForColum(cookie.column, startRow);
+               var createdCookie: Phaser.Sprite = this.cookieLayer.create(point.x, point.y, cookie.spriteName());
                createdCookie.inputEnabled = true;
                createdCookie.events.onInputDown.add(this.touchesBegan, this);
                createdCookie.events.onInputUp.add(this.touchesEnd, this);
                cookie.sprite = createdCookie;
                
+               var delay = 0.1 + 0.2 * (cookiesCount - idx - 1) * 500;
                
+               var duration = (startRow - cookie.row) * 100;
+               longestDuration = Math.max(longestDuration, duration + delay);
+               
+               var newPoint = this.pointForColum(cookie.column, cookie.row);
+               createdCookie.alpha = 0;
+               
+               var tween = this.game.add.tween(createdCookie).to({ x: newPoint.x, y: newPoint.y, alpha: 1 }, duration, Phaser.Easing.Linear.None, true, delay);
                
             });
             
          });
+         
+         this.game.time.events.add(longestDuration+1000, onComplete, this);
       }  
 
    }

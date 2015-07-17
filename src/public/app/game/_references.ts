@@ -16,6 +16,7 @@
 /// <reference path='states/preloader.ts' />
 /// <reference path='states/game-play.ts' />
 /// <reference path='states/game-end.ts' />
+/// <reference path='states/menu.ts' />
 
 /// <reference path='main.ts' />
 
