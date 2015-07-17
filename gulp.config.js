@@ -2,7 +2,7 @@ var destServer = './src/';
 	
 var srcServer = './src/',
     srcPublic = './src/public/',
-	 srcAngular = srcPublic + 'app/';
+	 clientApp = srcPublic + 'app/';
 
 var config = {
 	tsCompiler : { module: 'commonjs'},
@@ -15,16 +15,16 @@ var config = {
 		'!'+srcPublic+'**/*.js'
 	],
 	tsPublicSrc : [
-	    srcAngular + '**/*.ts',
-		 '!'+srcAngular + 'game/**/*.ts',
-		 '!'+srcAngular + 'typings**/*.ts'
+	    clientApp + '**/*.ts',
+		 '!'+clientApp + 'game/**/*.ts',
+		 '!'+clientApp + 'typings**/*.ts'
 	],
 	tsGameSrc : [
-	    srcAngular + 'game/**/*.ts',
-		'!'+srcAngular + 'typings**/*.ts'
+	    clientApp + 'game/**/*.ts',
+		'!'+clientApp + 'typings**/*.ts'
 	],
 	publicJsInject : [
-		 srcAngular + '**/*.js'
+		 clientApp + '**/*.js'
 	],
 	mainFile : destServer + 'app.js',
 	destServer : destServer,
@@ -33,7 +33,7 @@ var config = {
 	
 	bowerFiles: srcPublic + 'libs',
 	
-	specHelpers: 'TODO'
+	specHelpers: [clientApp + 'test-helpers/*.js']
 	
 };
 
@@ -42,8 +42,9 @@ config.karma = getKarmaOptions();
 function getKarmaOptions() {
 	var options = {
 		files: [].concat(
+			config.bowerFiles,
 			config.specHelpers,
-			srcPublic + ''
+			clientApp + 'game/TODO'
 		)
 	};
 	return options;
