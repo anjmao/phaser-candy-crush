@@ -4,8 +4,14 @@ module GameApp.Models {
 	'use strict'; 
 	
    export class Config{
-		static numColumns: number = 4;
-		static numRows: number = 4;
-		static numCookieTypes = 6;
+		numColumns: number;
+		numRows: number;
+		numCookieTypes;
+		
+		constructor(numColumns: number, numRows: number, numCookieTypes: number){
+			this.numColumns = numColumns;
+			this.numRows = numRows;
+			this.numCookieTypes = numCookieTypes;
+		}
 	}
 }

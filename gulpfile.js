@@ -16,17 +16,20 @@ var tsProject = ts.createProject({
 
 var tsPublicProject = ts.createProject({
    declarationFiles: false,
-   noExternalResolve: false
+   noExternalResolve: false,
+   target: 'ES5'
 });
 
 var tsPublicGameProject = ts.createProject({
    declarationFiles: false,
-   noExternalResolve: false
+   noExternalResolve: false,
+   target: 'ES5'
 });
 
 var tsGameTestsProject = ts.createProject({
    declarationFiles: false,
-   noExternalResolve: false
+   noExternalResolve: false,
+   target: 'ES5'
 });
 
 //main task for dev

@@ -39,11 +39,14 @@ module GameApp.States {
 
       private initLevel(levelName: string) {
          var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
+         
          if(levelData == null)
          {
             throw 'Cannot load level data';
          }
-         this.level = new Level();
+         
+         var gameConfig = new GameConfig(9, 9, 6);
+         this.level = new Level(gameConfig);
          this.level.initWithData(levelData);
          this.addTiles();
       }
@@ -73,7 +76,7 @@ module GameApp.States {
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
 
-         this.initLevel('level5');
+         this.initLevel('level1');
          this.beginGame();
 
       }
@@ -115,8 +118,8 @@ module GameApp.States {
 
       convertPoint(point: Phaser.Point, cookiePosition: GameObjects.ICookiePosition): boolean {
 
-         if (point.x >= 0 && point.x < GameConfig.numColumns * this.tileWidth &&
-            point.y >= 0 && point.y < GameConfig.numRows * this.tileHeight) {
+         if (point.x >= 0 && point.x < this.level.config.numColumns * this.tileWidth &&
+            point.y >= 0 && point.y < this.level.config.numRows * this.tileHeight) {
 
             cookiePosition.column = Phaser.Math.floor(point.x / this.tileWidth);
             cookiePosition.row = Phaser.Math.floor(point.y / this.tileHeight);
@@ -133,15 +136,11 @@ module GameApp.States {
          this.tilesLayer = this.game.add.group();
          this.tilesLayer.z = 1;
 
-         for (var row: number = 0; row < GameObjects.Config.numColumns; row++) {
-            for (var column: number = 0; column < GameObjects.Config.numColumns; column++) {
+         for (var row: number = 0; row < this.level.config.numColumns; row++) {
+            for (var column: number = 0; column < this.level.config.numColumns; column++) {
                if (this.level.tileAtColumn(column, row) != null) {
                   var point = this.pointForColum(column, row);
                   this.tilesLayer.create(point.x, point.y, 'Tile');
-               }
-               else {
-                  var point = this.pointForColum(column, row);
-                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
@@ -251,8 +250,8 @@ module GameApp.States {
          var toColumn = this.swipeFromColumn + horzDelta;
          var toRow = this.swipeFromRow + vertDelta;
 
-         if (toColumn < 0 || toColumn >= GameConfig.numColumns) return;
-         if (toRow < 0 || toRow >= GameConfig.numRows) return;
+         if (toColumn < 0 || toColumn >= this.level.config.numColumns) return;
+         if (toRow < 0 || toRow >= this.level.config.numRows) return;
 
          var toCookie: Cookie = this.level.cookieAtPosition(toColumn, toRow);
          if (!toCookie) return;

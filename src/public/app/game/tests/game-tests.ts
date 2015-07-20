@@ -15,7 +15,9 @@ describe('Level.ts', function() {
    });
 
    beforeEach(function() {
-      level = new GameApp.Models.Level();
+      var config = new GameConfig(4,4,6);
+      level = new GameApp.Models.Level(config);
+     
       var data: IJsonLevel = {
          "tiles": [[1, 1, 1, 1],
                    [1, 1, 1, 1],
