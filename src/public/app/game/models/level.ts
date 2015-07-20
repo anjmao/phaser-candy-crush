@@ -49,6 +49,11 @@ module GameApp.Models {
 
 			return false;
 		}
+		
+		getPossibleSwaps(): Swap[]{
+			return this.possibleSwaps;
+		}
+		
 
 		private isTwoCookiesEquals(cookieA: Cookie, cookieB: Cookie) {
 			return cookieA.column == cookieB.column && cookieA.row == cookieB.row && cookieA.cookieType == cookieB.cookieType;
@@ -136,7 +141,8 @@ module GameApp.Models {
 				}
 			}
 
-			this.possibleSwaps = R.clone(possibleSwaps);
+         this.possibleSwaps = possibleSwaps;
+			//this.possibleSwaps = R.clone(possibleSwaps);
 		}
 
 		createInitialCookies(): Array<Cookie> {
@@ -187,7 +193,7 @@ module GameApp.Models {
 					this.cookies[column][row - 2].cookieType == cookieType)
 		}
 
-		cookieAtColumn(column: number, row: number) {
+		cookieAtPosition(column: number, row: number) {
 			return this.cookies[column][row]
 		}
 
@@ -216,7 +222,7 @@ module GameApp.Models {
 			return this.tiles[column][row]
 		}
 
-		initWithLevel(level: IJsonLevel) {
+		initWithData(level: IJsonLevel) {
 			this.createTilesArray();
 
 			for (var row: number = 0; row < this.numRows; row++) {

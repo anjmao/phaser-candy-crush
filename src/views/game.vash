@@ -69,7 +69,7 @@ FB.getLoginStatus(function(response) {
     </div> <!-- /container -->
      <h1 id="fb-welcome"></h1>
     <!-- bower:js -->
-    <script src="/libs/ramda/dist/ramda.min.js"></script>
+    <!--<script src="/libs/ramda/dist/ramda.min.js"></script>-->
     <script src="/libs/jquery/dist/jquery.js"></script>
     <script src="/libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/libs/phaser/build/phaser.js"></script>

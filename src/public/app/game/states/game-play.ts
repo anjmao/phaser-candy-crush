@@ -44,7 +44,7 @@ module GameApp.States {
             throw 'Cannot load level data';
          }
          this.level = new Level();
-         this.level.initWithLevel(levelData);
+         this.level.initWithData(levelData);
          this.addTiles();
       }
 
@@ -155,7 +155,7 @@ module GameApp.States {
          var convert = this.convertPoint(new Phaser.Point(x-32, y-32), cookiePosition);
          
          if(convert){
-            var cookie = this.level.cookieAtColumn(cookiePosition.column, cookiePosition.row);
+            var cookie = this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row);
             if(cookie){
                console.log('actual cookie', {
                column: cookie.column,
@@ -216,7 +216,7 @@ module GameApp.States {
          }
 
          if (this.convertPoint(selectedCookie.position, cookiePosition)) {
-            if (this.level.cookieAtColumn(cookiePosition.column, cookiePosition.row)) {
+            if (this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row)) {
                this.swipeFromColumn = cookiePosition.column;
                this.swipeFromRow = cookiePosition.row;
             }
@@ -254,10 +254,10 @@ module GameApp.States {
          if (toColumn < 0 || toColumn >= GameConfig.numColumns) return;
          if (toRow < 0 || toRow >= GameConfig.numRows) return;
 
-         var toCookie: Cookie = this.level.cookieAtColumn(toColumn, toRow);
+         var toCookie: Cookie = this.level.cookieAtPosition(toColumn, toRow);
          if (!toCookie) return;
 
-         var fromCookie = this.level.cookieAtColumn(this.swipeFromColumn, this.swipeFromRow);
+         var fromCookie = this.level.cookieAtPosition(this.swipeFromColumn, this.swipeFromRow);
 
          var swap = new Swap();
          swap.cookieA = fromCookie;

@@ -21,7 +21,8 @@ var config = {
 	],
 	tsGameSrc : [
 	    clientApp + 'game/**/*.ts',
-		'!'+clientApp + 'typings**/*.ts'
+		'!'+clientApp + 'typings**/*.ts',
+		'!'+clientApp + 'game/tests/**/*.ts'
 	],
 	publicJsInject : [
 		 clientApp + '**/*.js'
@@ -30,24 +31,14 @@ var config = {
 	destServer : destServer,
 	destPublic : srcPublic,
 	srcServer : srcServer,
+	clientApp : clientApp,
+	gameTestsSrc: clientApp+ 'game/tests/**/*.ts',
 	
-	bowerFiles: srcPublic + 'libs',
-	
-	specHelpers: [clientApp + 'test-helpers/*.js']
+	browserSync: [
+		'public/**/*.*',
+		"!" + 'public/app/game/tests/**/*.*'
+	]
 	
 };
-
-config.karma = getKarmaOptions();
-
-function getKarmaOptions() {
-	var options = {
-		files: [].concat(
-			config.bowerFiles,
-			config.specHelpers,
-			clientApp + 'game/TODO'
-		)
-	};
-	return options;
-}
 
 module.exports = config;
