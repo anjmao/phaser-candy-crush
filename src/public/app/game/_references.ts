@@ -22,6 +22,4 @@
 /// <reference path='main.ts' />
 
 
-
 /// <reference path='game-helpers.ts' />
-/// <reference path='game-timer.ts' />

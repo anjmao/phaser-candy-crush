@@ -12,7 +12,7 @@ import GameConfig = GameObjects.Config;
 module GameApp.States {
    'use strict';
 
-   export class GamePlay extends Phaser.State {
+   export class GameScene extends Phaser.State {
 
       tileWidth: number = 64.0;
       tileHeight: number = 72.0;
@@ -36,27 +36,14 @@ module GameApp.States {
       
       gameTimer: GameTimer;
 
-
-      private initLevel(levelName: string) {
-         var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
-         
-         if(levelData == null)
-         {
-            throw 'Cannot load level data';
-         }
-         
-         var gameConfig = new GameConfig(9, 9, 6);
-         this.level = new Level(gameConfig);
-         this.level.initWithData(levelData);
-         this.addTiles();
-      }
-
       create() {
+
+         var levelNumber = this.game.state.states['GameScene'].levelNumber;
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
 
-         var text = this.game.add.text(64, 20, "Level 1", {
+         var text = this.game.add.text(64, 20, "Level "+levelNumber, {
             font: "20px Arial",
             fill: "yellow",
             align: "center"
@@ -73,12 +60,26 @@ module GameApp.States {
          this.gameTimer.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
-
-         this.initLevel('level1');
+         
+         this.initLevel('level'+levelNumber);
          this.beginGame();
 
       }
 
+      private initLevel(levelName: string) {
+         var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
+         
+         if(levelData == null)
+         {
+            throw 'Cannot load level data';
+         }
+         
+         var gameConfig = new GameConfig(9, 9, 6);
+         this.level = new Level(gameConfig);
+         this.level.initWithData(levelData);
+         this.addTiles();
+      }
+      
       render() {
          this.gameTimer.renderTimer();
       }

@@ -32,12 +32,24 @@ module GameApp.States{
          this.timerText.anchor.set(0.5, 0.5);
          
          this.timer = this.game.time.create();
-         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
+         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 20, this.endTimer, this);
          this.timer.start();
       }
       
       endTimer(){
          this.timer.stop();
+         
+         
+         var levelNumber = parseInt(this.game.state.states['GameScene'].levelNumber);
+         if(levelNumber <= 3){
+             levelNumber = levelNumber+1;
+             this.game.state.states['GameScene'].levelNumber = levelNumber;
+             this.game.state.start('GameScene', true, false);
+         }
+         else{
+            this.timerText.text = "Game over";
+         }
+        
       }
       
       formatTime(s: number){
