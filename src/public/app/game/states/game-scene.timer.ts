@@ -1,4 +1,4 @@
-module GameApp{
+module GameApp.States{
 	'use strict';
 	
 	export class GameTimer{
@@ -32,7 +32,7 @@ module GameApp{
          this.timerText.anchor.set(0.5, 0.5);
          
          this.timer = this.game.time.create();
-         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 2 + Phaser.Timer.SECOND, this.endTimer, this);
+         this.timerEvent = this.timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
          this.timer.start();
       }
       

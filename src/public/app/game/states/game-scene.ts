@@ -69,8 +69,6 @@ module GameApp.States {
          this.fallingCookieSound = this.game.add.audio('fallingCookieSound');
          this.addCookieSound = this.game.add.audio('addCookieSound');
          
-         
-
          this.gameTimer = new GameTimer(this.game);
          this.gameTimer.createTimer();
 

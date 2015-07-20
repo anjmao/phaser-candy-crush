@@ -14,7 +14,8 @@
 
 /// <reference path='states/boot.ts' />
 /// <reference path='states/preloader.ts' />
-/// <reference path='states/game-play.ts' />
+/// <reference path='states/game-scene.ts' />
+/// <reference path='states/game-scene.timer.ts' />
 /// <reference path='states/game-end.ts' />
 /// <reference path='states/menu.ts' />
 
