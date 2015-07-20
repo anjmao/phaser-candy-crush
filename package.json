@@ -22,7 +22,22 @@
   "homepage": "https://github.com/Anjmao/candy-crust#readme",
   "devDependencies": {
     "browser-sync": "^2.7.13",
-    "gulp-nodemon": "^2.0.3"
+    "chai": "^3.1.0",
+    "gulp-nodemon": "^2.0.3",
+    "karma": "^0.13.1",
+    "karma-chai": "^0.1.0",
+    "karma-chai-sinon": "^0.1.5",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.4.2",
+    "karma-growl-reporter": "^0.1.1",
+    "karma-mocha": "^0.2.0",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-sinon": "^1.0.4",
+    "mocha": "^2.2.5",
+    "mocha-clean": "^0.4.0",
+    "phantomjs": "^1.9.17",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
   },
   "dependencies": {
     "body-parser": "^1.12.4",

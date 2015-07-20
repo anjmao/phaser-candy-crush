@@ -51,7 +51,8 @@ module GameApp.States {
           
          //var tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
         // tween.onComplete.add(this.startMainMenu, this);
-         this.game.state.start('GamePlay', true, false);
+         this.game.state.states['GameScene'].levelNumber = 0;
+         this.game.state.start('GameScene', true, false);
       }
 
    }

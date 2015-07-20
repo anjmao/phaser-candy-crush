@@ -2,8 +2,8 @@
 
 import Boot = GameApp.States.Boot;
 import Preloader = GameApp.States.Preloader;
-import GamePlay = GameApp.States.GamePlay;
-import GameEnd = GameApp.States.GamePlay;
+import GameScene = GameApp.States.GameScene;
+import GameEnd = GameApp.States.GameEnd;
 import Menu = GameApp.States.Menu;
 
 class CandyGame {
@@ -20,7 +20,7 @@ class CandyGame {
       this.game.state.add("Boot", Boot);
       this.game.state.add("Preloader", Preloader);
       this.game.state.add("Menu", Menu);
-      this.game.state.add("GamePlay", GamePlay);
+      this.game.state.add("GameScene", GameScene);
       this.game.state.add("GameEnd", GameEnd);
       
       this.game.state.start("Boot");

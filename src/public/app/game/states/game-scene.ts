@@ -12,7 +12,7 @@ import GameConfig = GameObjects.Config;
 module GameApp.States {
    'use strict';
 
-   export class GamePlay extends Phaser.State {
+   export class GameScene extends Phaser.State {
 
       tileWidth: number = 64.0;
       tileHeight: number = 72.0;
@@ -36,24 +36,14 @@ module GameApp.States {
       
       gameTimer: GameTimer;
 
-
-      private initLevel(levelName: string) {
-         var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
-         if(levelData == null)
-         {
-            throw 'Cannot load level data';
-         }
-         this.level = new Level();
-         this.level.initWithLevel(levelData);
-         this.addTiles();
-      }
-
       create() {
+
+         var levelNumber = this.game.state.states['GameScene'].levelNumber;
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
 
-         var text = this.game.add.text(64, 20, "Level 1", {
+         var text = this.game.add.text(64, 20, "Level "+levelNumber, {
             font: "20px Arial",
             fill: "yellow",
             align: "center"
@@ -66,18 +56,30 @@ module GameApp.States {
          this.fallingCookieSound = this.game.add.audio('fallingCookieSound');
          this.addCookieSound = this.game.add.audio('addCookieSound');
          
-         
-
          this.gameTimer = new GameTimer(this.game);
          this.gameTimer.createTimer();
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
-
-         this.initLevel('level5');
+         
+         this.initLevel('level'+levelNumber);
          this.beginGame();
 
       }
 
+      private initLevel(levelName: string) {
+         var levelData: IJsonLevel = this.game.cache.getJSON(levelName);
+         
+         if(levelData == null)
+         {
+            throw 'Cannot load level data';
+         }
+         
+         var gameConfig = new GameConfig(9, 9, 6);
+         this.level = new Level(gameConfig);
+         this.level.initWithData(levelData);
+         this.addTiles();
+      }
+      
       render() {
          this.gameTimer.renderTimer();
       }
@@ -115,8 +117,8 @@ module GameApp.States {
 
       convertPoint(point: Phaser.Point, cookiePosition: GameObjects.ICookiePosition): boolean {
 
-         if (point.x >= 0 && point.x < GameConfig.numColumns * this.tileWidth &&
-            point.y >= 0 && point.y < GameConfig.numRows * this.tileHeight) {
+         if (point.x >= 0 && point.x < this.level.config.numColumns * this.tileWidth &&
+            point.y >= 0 && point.y < this.level.config.numRows * this.tileHeight) {
 
             cookiePosition.column = Phaser.Math.floor(point.x / this.tileWidth);
             cookiePosition.row = Phaser.Math.floor(point.y / this.tileHeight);
@@ -133,15 +135,11 @@ module GameApp.States {
          this.tilesLayer = this.game.add.group();
          this.tilesLayer.z = 1;
 
-         for (var row: number = 0; row < GameObjects.Config.numColumns; row++) {
-            for (var column: number = 0; column < GameObjects.Config.numColumns; column++) {
+         for (var row: number = 0; row < this.level.config.numColumns; row++) {
+            for (var column: number = 0; column < this.level.config.numColumns; column++) {
                if (this.level.tileAtColumn(column, row) != null) {
                   var point = this.pointForColum(column, row);
                   this.tilesLayer.create(point.x, point.y, 'Tile');
-               }
-               else {
-                  var point = this.pointForColum(column, row);
-                  this.tilesLayer.create(point.x, point.y, 'TileEmpty');
                }
             }
          }
@@ -155,7 +153,7 @@ module GameApp.States {
          var convert = this.convertPoint(new Phaser.Point(x-32, y-32), cookiePosition);
          
          if(convert){
-            var cookie = this.level.cookieAtColumn(cookiePosition.column, cookiePosition.row);
+            var cookie = this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row);
             if(cookie){
                console.log('actual cookie', {
                column: cookie.column,
@@ -216,7 +214,7 @@ module GameApp.States {
          }
 
          if (this.convertPoint(selectedCookie.position, cookiePosition)) {
-            if (this.level.cookieAtColumn(cookiePosition.column, cookiePosition.row)) {
+            if (this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row)) {
                this.swipeFromColumn = cookiePosition.column;
                this.swipeFromRow = cookiePosition.row;
             }
@@ -251,13 +249,13 @@ module GameApp.States {
          var toColumn = this.swipeFromColumn + horzDelta;
          var toRow = this.swipeFromRow + vertDelta;
 
-         if (toColumn < 0 || toColumn >= GameConfig.numColumns) return;
-         if (toRow < 0 || toRow >= GameConfig.numRows) return;
+         if (toColumn < 0 || toColumn >= this.level.config.numColumns) return;
+         if (toRow < 0 || toRow >= this.level.config.numRows) return;
 
-         var toCookie: Cookie = this.level.cookieAtColumn(toColumn, toRow);
+         var toCookie: Cookie = this.level.cookieAtPosition(toColumn, toRow);
          if (!toCookie) return;
 
-         var fromCookie = this.level.cookieAtColumn(this.swipeFromColumn, this.swipeFromRow);
+         var fromCookie = this.level.cookieAtPosition(this.swipeFromColumn, this.swipeFromRow);
 
          var swap = new Swap();
          swap.cookieA = fromCookie;
