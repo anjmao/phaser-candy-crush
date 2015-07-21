@@ -16,6 +16,7 @@ module GameApp.States {
 
       tileWidth: number = 64.0;
       tileHeight: number = 72.0;
+      marginYDelta: number = 50;
 
       level: GameObjects.Level;
 
@@ -35,20 +36,25 @@ module GameApp.States {
       addCookieSound: Phaser.Sound;
       
       gameTimer: GameTimer;
+      
+      score: number;
+      scoreText: Phaser.Text;
+      scoreLabel: Phaser.Text;
 
       create() {
 
-         var levelNumber = this.game.state.states['GameScene'].levelNumber;
+         var levelNumber: number = this.game.state.states['GameScene'].levelNumber;
 
          var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
          bg.anchor.setTo(0.5, 0.5);
 
-         var text = this.game.add.text(64, 20, "Level "+levelNumber, {
-            font: "20px Arial",
-            fill: "yellow",
-            align: "center"
-         });
-         text.anchor.set(0.5, 0.5);
+         this.game.sound.play('bgMusic');
+         
+         this.createLevelText(levelNumber + 1);
+         
+         this.initScore();
+         this.createScoreText();
+         
 
          this.swapSound = this.game.add.audio('swapSound');
          this.invalidSwapSound = this.game.add.audio('invalidSwapSound');
@@ -61,9 +67,60 @@ module GameApp.States {
 
          this.game.input.addMoveCallback(this.touchesMoved, this);
          
+         
          this.initLevel('level'+levelNumber);
          this.beginGame();
 
+      }
+      
+      private initScore() {
+         var scoreFromState = this.game.state.states['GameScene'].score;
+         if(scoreFromState != null){
+            this.score =  scoreFromState;
+         }
+         else{
+            this.score =  0;
+         }
+      }
+      
+      private createLevelText(levelNumber){
+         var levelLabel = this.game.add.text(550, 20, "Level:", {
+            font: "Gill Sans Bold",
+            fill: "white",
+            align: "center",
+            fontSize: 20
+         });
+         levelLabel.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 0);
+         
+         var levelText = this.game.add.text(550, 40, ""+levelNumber, {
+            font: "Gill Sans Bold",
+            fill: "white",
+            align: "center",
+            fontSize: 30
+         });
+         levelText.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 0);
+      }
+      
+      private createScoreText(){
+         this.scoreLabel = this.game.add.text(this.game.world.centerX, 20 , "Score:" , {
+            font: "Gill Sans Bold",
+            fill: "white",
+            fontSize: 20
+         });
+         this.scoreLabel.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 0);
+         
+         
+         this.scoreText = this.game.add.text(this.game.world.centerX, 40 , ""+this.score , {
+            font: "Gill Sans Bold",
+            fill: "white",
+            fontSize: 30
+         });
+         this.scoreText.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 0);
+         
+      }
+      
+      private updateScoreText(){
+         this.scoreText.text = ""+this.score;
       }
 
       private initLevel(levelName: string) {
@@ -100,9 +157,10 @@ module GameApp.States {
 
          this.cookieLayer = this.game.add.group();
          this.cookieLayer.z = 2;
+         
 
          cookies.forEach((cookie: Cookie) => {
-            var point = this.pointForColum(cookie.column, cookie.row);
+            var point = this.pointForCookie(cookie.column, cookie.row);
             var createdCookie = this.cookieLayer.create(point.x, point.y, cookie.spriteName());
             createdCookie.inputEnabled = true;
             createdCookie.events.onInputDown.add(this.touchesBegan, this);
@@ -111,17 +169,23 @@ module GameApp.States {
          })
       }
 
-      pointForColum(column: number, row: number): Phaser.Point {
-         return new Phaser.Point(column * this.tileWidth + this.tileWidth / 2, row * this.tileHeight + this.tileHeight / 2);
+      pointForCookie(column: number, row: number): Phaser.Point {
+         var x = column * this.tileWidth + this.tileWidth / 2;
+         var y = (row * this.tileHeight + this.tileHeight / 2) + this.marginYDelta;
+         
+         return new Phaser.Point(x, y);
       }
 
       convertPoint(point: Phaser.Point, cookiePosition: GameObjects.ICookiePosition): boolean {
 
-         if (point.x >= 0 && point.x < this.level.config.numColumns * this.tileWidth &&
-            point.y >= 0 && point.y < this.level.config.numRows * this.tileHeight) {
+         var x = point.x - 32;
+         var y = point.y - 32 - this.marginYDelta;
+         
+         if (x >= 0 && x < this.level.config.numColumns * this.tileWidth &&
+            y >= 0 && y < this.level.config.numRows * this.tileHeight) {
 
-            cookiePosition.column = Phaser.Math.floor(point.x / this.tileWidth);
-            cookiePosition.row = Phaser.Math.floor(point.y / this.tileHeight);
+            cookiePosition.column = Phaser.Math.floor(x / this.tileWidth);
+            cookiePosition.row = Phaser.Math.floor((y) / this.tileHeight);
 
             return true;
          }
@@ -138,7 +202,7 @@ module GameApp.States {
          for (var row: number = 0; row < this.level.config.numColumns; row++) {
             for (var column: number = 0; column < this.level.config.numColumns; column++) {
                if (this.level.tileAtColumn(column, row) != null) {
-                  var point = this.pointForColum(column, row);
+                  var point = this.pointForCookie(column, row);
                   this.tilesLayer.create(point.x, point.y, 'Tile');
                }
             }
@@ -150,7 +214,7 @@ module GameApp.States {
                column: null,
                row: null
          }
-         var convert = this.convertPoint(new Phaser.Point(x-32, y-32), cookiePosition);
+         var convert = this.convertPoint(new Phaser.Point(x, y), cookiePosition);
          
          if(convert){
             var cookie = this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row);
@@ -162,8 +226,8 @@ module GameApp.States {
             }
             
          }
-        
-         console.log('cookie point', cookiePosition);
+        console.log('x-'+x+' y-'+y);
+         //console.log('cookie point', cookiePosition);
       }
       touchesMoved(pointer: Phaser.Pointer, x, y, fromClick) {
          
@@ -178,10 +242,8 @@ module GameApp.States {
                row: null
             }
             //TODO: need to configure this sizes
-            var pointX = x - 32,
-               pointY = y - 32;
-
-            if (this.convertPoint(new Phaser.Point(pointX, pointY), cookiePosition)) {
+            
+            if (this.convertPoint(new Phaser.Point(x, y), cookiePosition)) {
 
                var horzDelta: number = 0,
                   vertDelta: number = 0;
@@ -212,7 +274,7 @@ module GameApp.States {
             column: null,
             row: null
          }
-
+         
          if (this.convertPoint(selectedCookie.position, cookiePosition)) {
             if (this.level.cookieAtPosition(cookiePosition.column, cookiePosition.row)) {
                this.swipeFromColumn = cookiePosition.column;
@@ -286,6 +348,8 @@ module GameApp.States {
          }
          
          this.animateMatchedCookies(chains);
+         this.updateScore(chains);
+         
          var columns = this.level.fillHoles();
          this.animateFallingCookies(columns);
          
@@ -295,6 +359,14 @@ module GameApp.States {
             this.handleMatches();
          });
 
+      }
+      
+      private updateScore(chains: Chain[]){
+         chains.forEach((chain) => {
+            this.score += chain.score;   
+         });
+         
+         this.updateScoreText();
       }
       
       private beginNextTurn(){
@@ -338,6 +410,9 @@ module GameApp.States {
       animateMatchedCookies(chains: Chain[]) {
 
          chains.forEach((chain) => {
+            
+            this.animateScoreForChain(chain);
+            
             chain.cookies.forEach((cookie) => {
                // 1
                if (cookie.sprite != null) {
@@ -355,6 +430,7 @@ module GameApp.States {
 
       }
       
+      
       animateFallingCookies(columns: any[]){
          
          var longestDuration = 0;
@@ -364,7 +440,7 @@ module GameApp.States {
             cookies.forEach((cookie: Cookie) => {
                count++;
                
-               var newPosition = this.pointForColum(cookie.column, cookie.row);
+               var newPosition = this.pointForCookie(cookie.column, cookie.row);
                
                var delay = 0.05 + 0.15 * count*500;
                
@@ -399,19 +475,19 @@ module GameApp.States {
             cookies.forEach((cookie: Cookie) => {
                idx++;
                
-               var point = this.pointForColum(cookie.column, startRow);
+               var point = this.pointForCookie(cookie.column, startRow);
                var createdCookie: Phaser.Sprite = this.cookieLayer.create(point.x, point.y, cookie.spriteName());
                createdCookie.inputEnabled = true;
                createdCookie.events.onInputDown.add(this.touchesBegan, this);
                createdCookie.events.onInputUp.add(this.touchesEnd, this);
                cookie.sprite = createdCookie;
                
-               var delay = 0.1 + 0.2 * (cookiesCount - idx - 1) * 500;
+               var delay = 0.1 + 0.2 * (cookiesCount - idx - 1) * 150;
                
                var duration = (startRow - cookie.row) * 100;
                longestDuration = Math.max(longestDuration, duration + delay);
                
-               var newPoint = this.pointForColum(cookie.column, cookie.row);
+               var newPoint = this.pointForCookie(cookie.column, cookie.row);
                createdCookie.alpha = 0;
                
                var tween = this.game.add.tween(createdCookie).to({ x: newPoint.x, y: newPoint.y, alpha: 1 }, duration, Phaser.Easing.Linear.None, true, delay);
@@ -420,8 +496,26 @@ module GameApp.States {
             
          });
          
-         this.game.time.events.add(longestDuration+1000, onComplete, this);
+         this.game.time.events.add(longestDuration+100, onComplete, this);
       }  
+      
+      animateScoreForChain(chain: Chain){
+         var firstCookie = chain.cookies[0];
+         var lastCookie = chain.cookies[chain.cookies.length - 1];
+         
+         var x = (firstCookie.sprite.position.x + lastCookie.sprite.position.x + 30)/2;
+         var y = (firstCookie.sprite.position.y + lastCookie.sprite.position.y)/2 - 8;
+         
+         var scoreLabel = this.game.add.text(x, y, ""+chain.score, {
+            font: "Gill Sans Bold",
+            fill: "white",
+            align: "center",
+            fontSize: 30
+         });
+         scoreLabel.z = 300;
+         
+         this.game.add.tween(scoreLabel).to({ alpha: 0 }, 700, Phaser.Easing.Linear.None, true);
+      }
 
    }
 }
