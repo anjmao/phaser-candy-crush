@@ -17,8 +17,10 @@ module GameApp.States {
 
          text.anchor.set(0.5, 0.5);
          
-         this.game.load.image('logo', assets+'logo.png');
+         this.game.load.image('logo', assets+'logo.png');//TODO: remove?
          this.game.load.image('bg', assets+'Background@2x.png');
+         this.game.load.image('levelComplete', assets+'LevelComplete@2x.png');
+         
          this.game.load.spritesheet("GEMS", assets+'diamonds32x5.png', 32, 32);
          
          this.game.load.image('Croissant', assets+'Croissant@2x.png');
@@ -27,6 +29,7 @@ module GameApp.States {
          this.game.load.image('Donut', assets+'Donut@2x.png');
          this.game.load.image('Macaroon', assets+'Macaroon@2x.png');
          this.game.load.image('SugarCookie', assets+'SugarCookie@2x.png');
+         
          
          this.game.load.image('Tile', assets+'Tile@2x.png');
          this.game.load.image('TileEmpty', assets+'TileEmpty.png')
@@ -43,7 +46,7 @@ module GameApp.States {
          this.game.load.audio('matchSound', assets+'sounds/Ka-Ching.wav');
          this.game.load.audio('fallingCookieSound', assets+'sounds/Scrape.wav');
          this.game.load.audio('addCookieSound', assets+'sounds/Drip.wav');
-         
+         this.game.load.audio('bgMusic', assets+'sounds/mining-by-moonlight.mp3');
       }
 
       create() {

@@ -1,26 +1,28 @@
 /// <reference path='../_references.ts' />
 
 module GameApp.Models {
-	'use strict'; 
-	
-	export enum ChainType{
+	'use strict';
+
+	export enum ChainType {
 		chainTypeHorizontal,
 		chainTypeVertical
 	}
-	
-   export class Chain{
+
+   export class Chain {
 		cookies: Cookie[];
 		chainType: ChainType;
-		
-		addCookie(cookie: Cookie){
-			if(this.cookies == null){
+		score: number;
+
+		addCookie(cookie: Cookie) {
+			if (this.cookies == null) {
 				this.cookies = [];
 			}
 			this.cookies.push(cookie);
 		}
-		
-		getCookies(): Cookie[]{
+
+		getCookies(): Cookie[] {
 			return this.cookies;
 		}
+
 	}
 }
