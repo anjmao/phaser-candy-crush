@@ -1,25 +1,29 @@
 /// <reference path='_references.ts' />
 
-class CandyGame{
-	constructor(scope: ng.IScope, injector) {
-        this.game = new Phaser.Game(640, 1136, Phaser.AUTO, 'gameCanvas', { preload: this.preload, create: this.create });
-    }
+import Boot = GameApp.States.Boot;
+import Preloader = GameApp.States.Preloader;
+import GameScene = GameApp.States.GameScene;
+import GameEnd = GameApp.States.GameEnd;
+import Menu = GameApp.States.Menu;
 
-    game: Phaser.Game;
+class CandyGame {
+   constructor(scope, injector) {
+      this.game = new Phaser.Game(640, 1136, Phaser.AUTO, 'gameCanvas', {
+         create: this.create
+      });
 
-    preload() {
-        this.game.load.image('logo', 'app/game/assets/logo.png');
-        this.game.load.image('bg','app/game/assets/Background@2x.png')
-    }
+   }
 
-    create() {
-        var bg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'bg');
-        bg.anchor.setTo(0.5, 0.5);
-        
-        this.game.input.addMoveCallback(this.moveCallback, this);
-    }
-    
-    moveCallback(pointer: Phaser.Pointer, x:number, y:number, fromClick){
-       
-    }
+   game: Phaser.Game;
+
+   create() {
+      this.game.state.add("Boot", Boot);
+      this.game.state.add("Preloader", Preloader);
+      this.game.state.add("Menu", Menu);
+      this.game.state.add("GameScene", GameScene);
+      this.game.state.add("GameEnd", GameEnd);
+      
+      this.game.state.start("Boot");
+   }
+
 }

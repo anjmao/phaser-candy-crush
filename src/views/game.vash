@@ -8,7 +8,6 @@
 	 <title>@model.title</title>
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
 
     <title>Navbar Template for Bootstrap</title>
 
@@ -23,7 +22,7 @@
 
   </head>
 
-  <body ng-app="GameApp">
+  <body style="margin:0; padding:0" ng-app="GameApp">
 <!--<script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -63,12 +62,14 @@ FB.getLoginStatus(function(response) {
    }(document, 'script', 'facebook-jssdk'));
 </script>-->
 
-    <div class="container" ng-controller="IndexController as vm">
-       <h1 id="fb-welcome"></h1>
+    <div ng-controller="IndexController as vm">
+      
        <div game-directive></div>
       
     </div> <!-- /container -->
+     <h1 id="fb-welcome"></h1>
     <!-- bower:js -->
+    <!--<script src="/libs/ramda/dist/ramda.min.js"></script>-->
     <script src="/libs/jquery/dist/jquery.js"></script>
     <script src="/libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/libs/phaser/build/phaser.js"></script>

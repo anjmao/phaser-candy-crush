@@ -13,7 +13,7 @@ class DbConnecton {
 			},
 
 			// SQLite only
-			storage: 'sqllite'
+			storage: '../sqllite'
 		});
 		
 		return sequelize;
