@@ -4,6 +4,9 @@
 One day I found very interesting blog post by [Matthijs Hollemans](http://www.raywenderlich.com/66877/how-to-make-a-game-like-candy-crush-part-1)
 In this tutorial Matthijs Hollemans shows how to create Candy Crush like game in Object-C language. I readed his article and decided to rewrite this game using Phaser HTML5 game engine. I also used typescript language, because it gives a lot of advantages comparing to ES5 javascript. AngularJs is used only for creating game directive, so it can be easily included in angular app.
 
+## Demo
+You can play demo with 5 levels [here](http://candy-game.herokuapp.com/). This game is deployed to heroku using free plan so it may be not available some times.
+
 ## Environment setup
 * Install NodeJs from https://nodejs.org/
 * clone repository to C:\Sources (create Source folder)
