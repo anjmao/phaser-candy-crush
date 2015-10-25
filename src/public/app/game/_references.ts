@@ -1,5 +1,4 @@
 /// <reference path='../../../../typings/angularjs/angular.d.ts' />
-/// <reference path='../../../../typings/ramda/ramda.d.ts' />
 /// <reference path='../../libs/phaser/typescript/phaser.d.ts' />
 
 /// <reference path='module.ts' />
@@ -19,7 +18,7 @@
 /// <reference path='states/game-end.ts' />
 /// <reference path='states/menu.ts' />
 
-/// <reference path='main.ts' />
+/// <reference path='candy-game.ts' />
 
 
 /// <reference path='game-helpers.ts' />

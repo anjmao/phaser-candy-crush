@@ -17,7 +17,7 @@ module GameApp.States {
 
          text.anchor.set(0.5, 0.5);
          
-         this.game.load.image('logo', assets+'logo.png');//TODO: remove?
+         this.game.load.image('logo', assets+'logo.png');//TODO: remove not used assets
          this.game.load.image('bg', assets+'Background@2x.png');
          this.game.load.image('levelComplete', assets+'LevelComplete@2x.png');
          
@@ -51,9 +51,6 @@ module GameApp.States {
 
       create() {
  
-          
-         //var tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
-        // tween.onComplete.add(this.startMainMenu, this);
          this.game.state.states['GameScene'].levelNumber = 0;
          this.game.state.start('GameScene', true, false);
       }

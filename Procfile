@@ -1,1 +1,1 @@
-web: node deploy/app.js
+web: node deploy/index.js

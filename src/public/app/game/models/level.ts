@@ -324,7 +324,6 @@ module GameApp.Models {
 			}
 
          this.possibleSwaps = possibleSwaps;
-			//this.possibleSwaps = R.clone(possibleSwaps);
 		}
 
 		private calculateCookieType(column: number, row: number): CookieType {

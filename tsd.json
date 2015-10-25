@@ -8,28 +8,7 @@
     "express/express.d.ts": {
       "commit": "066819c65ff561ca109955e0b725c253e243f0a2"
     },
-    "node/node.d.ts": {
-      "commit": "066819c65ff561ca109955e0b725c253e243f0a2"
-    },
-    "body-parser/body-parser.d.ts": {
-      "commit": "066819c65ff561ca109955e0b725c253e243f0a2"
-    },
-    "method-override/method-override.d.ts": {
-      "commit": "066819c65ff561ca109955e0b725c253e243f0a2"
-    },
-    "errorhandler/errorhandler.d.ts": {
-      "commit": "066819c65ff561ca109955e0b725c253e243f0a2"
-    },
-    "sequelize/sequelize.d.ts": {
-      "commit": "e18e130e2188348070f98d92b98c0ea481c4a086"
-    },
-    "lodash/lodash.d.ts": {
-      "commit": "e18e130e2188348070f98d92b98c0ea481c4a086"
-    },
     "angularjs/angular.d.ts": {
-      "commit": "448c3509f1ae76930ebd2d79df23e288172f5a0a"
-    },
-    "jquery/jquery.d.ts": {
       "commit": "448c3509f1ae76930ebd2d79df23e288172f5a0a"
     },
     "mocha/mocha.d.ts": {
@@ -37,6 +16,12 @@
     },
     "chai/chai.d.ts": {
       "commit": "6ecab2f1001e46887aea94b45ef0f58c98fca0ac"
+    },
+    "node/node.d.ts": {
+      "commit": "3191f6e0088eee07c4d8fd24e4d27a40a60d9eb9"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "3191f6e0088eee07c4d8fd24e4d27a40a60d9eb9"
     }
   }
 }

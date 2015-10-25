@@ -1,8 +1,0 @@
-@html.extend('layout', function(model){
-
-    @html.block('content', function(model){
-         <p>This is about page from vash view engine</p>
-
-    })
-
-})

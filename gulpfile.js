@@ -3,9 +3,7 @@ var gulp = require('gulp'),
    sourcemaps = require('gulp-sourcemaps'),
    clean = require('gulp-clean'),
    changed = require('gulp-changed'),
-   concat = require('gulp-concat'),
-   wiredep = require('wiredep').stream,
-   inject = require('gulp-inject');
+   concat = require('gulp-concat');
 
 var config = require('./gulp.config');
 var tsProject = ts.createProject({
@@ -57,15 +55,12 @@ gulp.task('clean-deploy', cleanDeploy);
 gulp.task('clean-js', cleanJs);
 gulp.task('copy-package', copyPackage);
 
-gulp.task('bower-inject', bowerInject);
-gulp.task('custom-inject', customInject);
-
 
 var browserSync = null;
 function browserSyncTask(params) {
    browserSync = require('browser-sync').create();
    browserSync.init(null, {
-      proxy: "http://localhost:5000",
+      proxy: "http://localhost:3000",
       files: config.browserSync,
       browser: "google chrome",
       port: 7000,
@@ -185,22 +180,6 @@ function cleanJs(params) {
    return gulp.src(paths, { read: false })
       .pipe(clean());
 }
-
-function bowerInject() {
-   return gulp.src(config.tsServerSrc + 'views/layout.vash')
-      .pipe(wiredep())
-      .pipe(gulp.dest(config.destServer + 'views/'));
-}
-
-function customInject(params) {
-   var target = gulp.src(config.srcServer + 'views/layout.vash');
-   // It's not necessary to read the files (will speed up things), we're only after their paths: 
-   var sources = gulp.src(config.publicJsInject);
-
-   return target.pipe(inject(sources))
-      .pipe(gulp.dest(config.destServer + 'views/'));
-}
-
 
 
 function log(message, object) {

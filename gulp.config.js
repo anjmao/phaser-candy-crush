@@ -27,7 +27,7 @@ var config = {
 	publicJsInject : [
 		 clientApp + '**/*.js'
 	],
-	mainFile : destServer + 'app.js',
+	mainFile : destServer + 'index.js',
 	destServer : destServer,
 	destPublic : srcPublic,
 	srcServer : srcServer,

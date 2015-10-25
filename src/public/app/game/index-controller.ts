@@ -6,6 +6,7 @@ module GameApp {
    export class IndexController{
 		constructor()
 		{
+			console.log('Game started')
 		}
 	}
 	
