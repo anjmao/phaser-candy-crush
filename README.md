@@ -31,3 +31,6 @@ Recommened IDE is Visual Studio Code.
 
 ## TODO
 Where is some bugs which need to be fixed and running unit tests you can notice test called <b>should fill holes after remove and get columns</b> some times fails, after fixing this test it should be fine. Also I made cookies to fall from bottom to top, this is because in objective-c arrays index is different from javascript arrays.
+
+## Image
+![Image of Game](https://github.com/Anjmao/candy/blob/github_master/heroku.png)
