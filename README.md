@@ -14,7 +14,7 @@ git clone https://github.com/Anjmao/candy.git
 ```
 npm install
 ```
-4. Run gulp start for starting game
+4. Run gulp start to start game in browser
 ```
 gulp start
 ```
@@ -24,6 +24,7 @@ Recommened IDE is Visual Studio Code.
 * Phaser
 * AngularJs
 * NodeJs+ExpressJs
+* Typescript
 
 ## TODO
 Where is some bugs which need to be fixed and running unit tests you can notice test called <b>should fill holes after remove and get columns</b> some times fails, after fixing this test it should be fine. Also I made cookies to fall from bottom to top, this is because in objective-c arrays index is different from javascript arrays.
