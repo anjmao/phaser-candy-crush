@@ -1,4 +1,5 @@
-# Candy crush like game made with Phaser HTML5 game engine
+# Candy crush like game made with Phaser HTML5 game engine [![kandi X-Ray](https://kandi.openweaver.com/badges/xray.svg)](https://kandi.openweaver.com/typescript/anjmao/phaser-candy-crush) [![kandi Featured](https://kandi.openweaver.com/badges/featured.svg)](https://kandi.openweaver.com/collections/gaming/candy-crush)
+
 
 ## About this game
 One day I found very interesting blog post by [Matthijs Hollemans](http://www.raywenderlich.com/66877/how-to-make-a-game-like-candy-crush-part-1)
